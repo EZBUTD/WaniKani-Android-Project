@@ -23,7 +23,7 @@ interface WanikaniApi {
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
 
-    //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects?types=radical,kanji")
     //suspend fun api_call() : WanikaniResponse
     suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
@@ -49,7 +49,7 @@ interface WanikaniApi {
                     //this.level = HttpLoggingInterceptor.Level.BASIC
                     this.level = HttpLoggingInterceptor.Level.BODY
                 })
-                .addInterceptor(BasicAuthInterceptor())
+                //.addInterceptor(BasicAuthInterceptor())       //Not sure why this doesn't work
                 .build()
 
                 return Retrofit.Builder()
