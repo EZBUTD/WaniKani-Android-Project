@@ -24,7 +24,7 @@ interface WanikaniApi {
 
 
     //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("v2/subjects?types=radical,kanji")
+    @GET("subjects?types=radical,kanji")
     //suspend fun api_call() : WanikaniResponse
     suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
 
@@ -46,13 +46,16 @@ interface WanikaniApi {
             val client = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     // Enable basic HTTP logging to help with debugging.
-                    this.level = HttpLoggingInterceptor.Level.BASIC
+                    //this.level = HttpLoggingInterceptor.Level.BASIC
+                    this.level = HttpLoggingInterceptor.Level.BODY
                 })
                 .addInterceptor(BasicAuthInterceptor())
                 .build()
+
                 return Retrofit.Builder()
-                .baseUrl(httpUrl)
+                //.baseUrl(httpUrl)
                 .client(client)
+                    .baseUrl("https://api.wanikani.com/v2/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(WanikaniApi::class.java)
