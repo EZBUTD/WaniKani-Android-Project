@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
         }
     }
     // XXX Another function is necessary
-    fun observeTriviaQuestion() : LiveData<List<WanikaniVocabulary>> {
+    fun observeWanikaniVocab() : LiveData<List<WanikaniVocabulary>> {
         return wanikanivocab
     }
 

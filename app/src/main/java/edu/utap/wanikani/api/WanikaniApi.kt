@@ -23,7 +23,7 @@ interface WanikaniApi {
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("vocabulary.json")
+    @GET("v2/vocabulary.json")
     suspend fun api_call(@Query("level") value: String) : WanikaniResponse
 
     data class WanikaniResponse(val results: List<WanikaniVocabulary>)
@@ -34,7 +34,7 @@ interface WanikaniApi {
         // https://square.github.io/okhttp/4.x/okhttp/okhttp3/-http-url/
         var url = HttpUrl.Builder()
             .scheme("https")
-            .host("api.wanikani.com/v2")
+            .host("api.wanikani.com")
             .build()
 
         // Public create function that ties together building the base
