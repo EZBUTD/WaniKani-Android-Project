@@ -18,18 +18,13 @@ interface WanikaniApi {
     //@GET("https://api.wanikani.com/v2/assignments.json")
     //suspend fun  getAssignments() : ListingResponse
 
-
     //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     //@GET("https://api.wanikani.com/v2/assignments.json")
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
-    //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    //@GET("https://api.wanikani.com/v2/vocabulary.json")
-    //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
-
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("vocabulary.json")
-    suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
+    suspend fun api_call(@Query("level") value: String) : WanikaniResponse
 
     data class WanikaniResponse(val results: List<WanikaniVocabulary>)
 
