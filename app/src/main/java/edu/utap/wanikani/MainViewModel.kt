@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.utap.wanikani.api.Repository
 import edu.utap.wanikani.api.WanikaniApi
-import edu.utap.wanikani.api.WanikaniVocabulary
+import edu.utap.wanikani.api.WanikaniSubjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -14,7 +14,7 @@ class MainViewModel : ViewModel() {
 
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
-    private val wanikanivocab = MutableLiveData<List<WanikaniVocabulary>>()
+    private val wanikanisubject = MutableLiveData<List<WanikaniSubjects>>()
 
     init {
        netRefresh()
@@ -23,12 +23,12 @@ class MainViewModel : ViewModel() {
     fun netRefresh() {
         // XXX Write me.  This is where the network request is initiated.
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            wanikanivocab.postValue(repo.fetchVocab("1"))
+            wanikanisubject.postValue(repo.fetchVocab(1))
         }
     }
     // XXX Another function is necessary
-    fun observeWanikaniVocab() : LiveData<List<WanikaniVocabulary>> {
-        return wanikanivocab
+    fun observeWanikaniSubject() : LiveData<List<WanikaniSubjects>> {
+        return wanikanisubject
     }
 
 }

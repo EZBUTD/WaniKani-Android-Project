@@ -1,16 +1,16 @@
 package edu.utap.wanikani.api
 
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
+import okhttp3.internal.connection.ConnectInterceptor.intercept
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call;
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET;
+import retrofit2.http.GET
 import retrofit2.http.Headers
-import retrofit2.http.Path;
 import retrofit2.http.Query
+import java.io.IOException
+
 
 interface WanikaniApi {
 
@@ -22,11 +22,13 @@ interface WanikaniApi {
     //@GET("https://api.wanikani.com/v2/assignments.json")
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
-    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("v2/vocabulary.json")
-    suspend fun api_call(@Query("level") value: String) : WanikaniResponse
 
-    data class WanikaniResponse(val results: List<WanikaniVocabulary>)
+    //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("v2/subjects?types=radical,kanji")
+    //suspend fun api_call() : WanikaniResponse
+    suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
+
+    data class WanikaniResponse(val results: List<WanikaniSubjects>)
 
     companion object {
         // Leave this as a simple, base URL.  That way, we can have many different
@@ -43,10 +45,12 @@ interface WanikaniApi {
         private fun create(httpUrl: HttpUrl): WanikaniApi {
             val client = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {
+                    // Enable basic HTTP logging to help with debugging.
                     this.level = HttpLoggingInterceptor.Level.BASIC
                 })
+                .addInterceptor(BasicAuthInterceptor())
                 .build()
-            return Retrofit.Builder()
+                return Retrofit.Builder()
                 .baseUrl(httpUrl)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())

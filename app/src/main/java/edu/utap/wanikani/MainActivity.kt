@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             // XXX Write me: add fragments to layout, swipeRefresh
             supportFragmentManager.beginTransaction()
-                .replace(R.id.q1, MainFragment.newInstance("blah"))
+                .add(R.id.main_frame, MainFragment.newInstance("blah"))
                 .commit()
 
             viewModel.netRefresh()
