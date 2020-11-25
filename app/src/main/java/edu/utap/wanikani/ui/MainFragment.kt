@@ -6,11 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
+import kotlinx.android.synthetic.main.main_fragment.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,9 +27,15 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MainFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(R.layout.main_fragment) {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
+
+    companion object {
+        fun newInstance(): MainFragment {
+            return MainFragment()
+        }
+    }
 
     private val viewModel: MainViewModel
     // XXX initialize the viewModel
@@ -43,25 +54,34 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.main_fragment, container, false)
 
         viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
             Observer {
-                val subject = this.arguments
-                Log.d("XXXFrag", "My idx is $subject")
+                if (it != null) {
+                    val subject = it[0].characters
+                    Log.d("XXXFrag", "My subject character is ${subject}")
+                } else{
+                    Log.d("XXXFrag", "subject is null?")
 
-                //val swipeRefresh = requireActivity().findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
-                //swipeRefresh.isRefreshing = false
-
-                //setClickListeners(it[idx!!], qTV, qTrueBut, qFalseBut)
-                //resetQColor()
+                }
             }
         )
-        return inflater.inflate(R.layout.main_fragment, container, false)
+
+        //val testButton = (activity as AppCompatActivity).findViewById<TextView>(R.id.testBut)
+
+
+        return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        testBut.setOnClickListener{
+            viewModel.netRefresh()
+        }
+    }
 
-    /*
+/*
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // XXX Write me.  viewModel should observe something
@@ -70,8 +90,25 @@ class MainFragment : Fragment() {
         // You should "turn off" the swipe refresh spinner.  You might
         // find the requireActivity() function useful for this.
 
+        viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    val subject = it[0].characters
+                    Log.d("XXXFrag", "My subject character is ${subject}")
+                } else{
+                    Log.d("XXXFrag", "subject is null")
+
+                }
+            }
+        )
+
+        testBut.setOnClickListener{
+            viewModel.netRefresh()
+        }
+
     }
 */
+    /*
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -90,4 +127,6 @@ class MainFragment : Fragment() {
                 }
             }
     }
+
+     */
 }

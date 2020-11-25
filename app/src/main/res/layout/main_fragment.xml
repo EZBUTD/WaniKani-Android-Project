@@ -3,12 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
     tools:context=".ui.MainFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/blahTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Question Text"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:layout_margin="200dp"
+        android:text="TEST"
+        android:id="@+id/testBut"
+        />
 
 </FrameLayout>
