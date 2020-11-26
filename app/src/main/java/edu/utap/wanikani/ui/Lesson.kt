@@ -15,12 +15,17 @@ class Lesson : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
+    private var currentIdx : Int =0
+    //fragment tabs for the radicals section
+    private var radicalTabsIdx : Int = 0
+    private val radicalTabs : List<String> = listOf("Name", "Examples")
+    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Examples")
+
+    //Some hardcoded values just to see what my layout looks like.
     private val debug_characters : List<String> = listOf("一", "ハ")
     private val debug_meaning : List<String> = listOf("Ground", "Fins")
     private val debug_nameMnemonic :List<String> = listOf("This radical consists of a single, horizontal stroke. What's the biggest, single, horizontal stroke? That's the ground. Look at the ground, look at this radical, now look at the ground again. Kind of the same, right?", "Picture a fish. Now picture the fish a little worse, like a child's drawing of the fish. Now erase the fish's body and... you're left with two fins! Do you see these two fins? Yeah, you see them.")
     private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
-    private var debug_idxPtr : Int =0
-    private var debug_nameExamplePointer = "Name"
 
     //I think you would need a lateinit var like this? I'm not sure
     // private lateinit var lessonCharacters : List<String>
@@ -38,67 +43,67 @@ class Lesson : Fragment() {
     }
 
     private fun initNameMnemonic_Examples(){
-        nameMnemonicTV.text = "Name Mnemonic"
+        tabTitleTV.text = radicalTabsTitles[0]
         textBlockTV.text = debug_nameMnemonic[0]
 
         nameTV.setOnClickListener{
-            textBlockTV.text = debug_nameMnemonic[debug_idxPtr]
-
-            debug_nameExamplePointer="Name"
+            radicalTabsIdx=0
+            openTab(radicalTabsIdx)
         }
 
         examplesTV.setOnClickListener{
-            openExamples()
+            radicalTabsIdx=1
+            openTab(radicalTabsIdx)
         }
     }
 
-    private fun openExamples() {
-        textBlockTV.text = debug_examples[debug_idxPtr]
-        nameMnemonicTV.text = "Kanji Examples"
+    private fun openTab(tabIdx: Int) {
+        tabTitleTV.text = radicalTabsTitles[tabIdx]
 
-        debug_nameExamplePointer="Examples"
+        if (tabIdx == 0){
+            textBlockTV.text = debug_nameMnemonic[currentIdx]
+        } else {
+            textBlockTV.text = debug_examples[currentIdx]
+        }
     }
 
     private fun initLeftRightArrow(){
         leftArrowTV.setOnClickListener{
-            debug_nameExamplePointer="Name"
             decrementIdx()
-            nameMnemonicTV.text = "Name Mnemonic"
-            charTV.text = debug_characters[debug_idxPtr]
-            meaningTV.text = debug_meaning[debug_idxPtr]
-            textBlockTV.text = debug_nameMnemonic[debug_idxPtr]
+            radicalTabsIdx=0
+            openTab(radicalTabsIdx)
 
+            charTV.text = debug_characters[currentIdx]
+            meaningTV.text = debug_meaning[currentIdx]
         }
 
         rightArrowTV.setOnClickListener{
-            if(debug_nameExamplePointer == "Name") {
-                debug_nameExamplePointer="Examples"
-                openExamples()
-            }
-            else {
-                debug_nameExamplePointer="Name"
+            if (radicalTabsIdx == radicalTabs.size-1) {
                 incrementIdx()
-                textBlockTV.text = debug_nameMnemonic[debug_idxPtr]
-                nameMnemonicTV.text = "Name Mnemonic"
+                radicalTabsIdx=0
+                openTab(radicalTabsIdx)
+            } else {
+                radicalTabsIdx++
+                openTab(radicalTabsIdx)
             }
-            charTV.text = debug_characters[debug_idxPtr]
-            meaningTV.text = debug_meaning[debug_idxPtr]
 
+            charTV.text = debug_characters[currentIdx]
+            meaningTV.text = debug_meaning[currentIdx]
         }
     }
 
     private fun decrementIdx() {
-        if( debug_idxPtr == 0)
-            debug_idxPtr = debug_characters.size-1
+        if( currentIdx == 0)
+            currentIdx = debug_characters.size-1
         else
-            debug_idxPtr--
+            currentIdx--
     }
 
     private fun incrementIdx() {
-        if( debug_idxPtr == debug_characters.size-1)
-            debug_idxPtr = 0
+        if( currentIdx == debug_characters.size-1)
+            currentIdx = 0
         else
-            debug_idxPtr++
+            currentIdx++
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -118,11 +123,9 @@ class Lesson : Fragment() {
         initMeaning()
         initNameMnemonic_Examples()
         initLeftRightArrow()
-
     }
 
     companion object {
-
         fun newInstance() : Lesson {
             return Lesson()
         }
