@@ -1,26 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFFFF"
-    tools:context=".ui.MainFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    android:orientation="vertical"
+>
     <TextView
-        android:id="@+id/blahTV"
+        android:id="@+id/greetTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:text="Question Text"
+        android:text="Hello! "
+        android:layout_margin="8dp"
         android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
     <TextView
-        android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:layout_margin="200dp"
+        android:id="@+id/nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:layout_margin="8dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/greetTV"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <TextView
+        android:id="@+id/myprogresstextTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress: "
+        android:textSize="16sp"
+        android:layout_margin="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greetTV"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Session"
+        android:id="@+id/startBut"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="TEST"
         android:id="@+id/testBut"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
         />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
