@@ -61,20 +61,25 @@ class Lesson : Fragment() {
 
     private fun initLeftRightArrow(){
         leftArrowTV.setOnClickListener{
+            debug_nameExamplePointer="Name"
             decrementIdx()
+            nameMnemonicTV.text = "Name Mnemonic"
             charTV.text = debug_characters[debug_idxPtr]
             meaningTV.text = debug_meaning[debug_idxPtr]
+            textBlockTV.text = debug_nameMnemonic[debug_idxPtr]
 
         }
 
         rightArrowTV.setOnClickListener{
             if(debug_nameExamplePointer == "Name") {
-                openExamples()
                 debug_nameExamplePointer="Examples"
+                openExamples()
             }
             else {
                 debug_nameExamplePointer="Name"
                 incrementIdx()
+                textBlockTV.text = debug_nameMnemonic[debug_idxPtr]
+                nameMnemonicTV.text = "Name Mnemonic"
             }
             charTV.text = debug_characters[debug_idxPtr]
             meaningTV.text = debug_meaning[debug_idxPtr]
@@ -90,7 +95,7 @@ class Lesson : Fragment() {
     }
 
     private fun incrementIdx() {
-        if( debug_idxPtr == debug_characters.size)
+        if( debug_idxPtr == debug_characters.size-1)
             debug_idxPtr = 0
         else
             debug_idxPtr++
