@@ -24,12 +24,21 @@ interface WanikaniApi {
 
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("subjects?types=radical,kanji")
-    //suspend fun api_call() : WanikaniResponse
+    @GET("subjects/1?types=radical,kanji")
     suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
 
-    data class WanikaniResponse(val results: List<WanikaniSubjects>)
+    data class WanikaniResponse(val data: WanikaniSubjects)
 
+    /*
+    class ListingResponse(val data: ListingData)
+
+    class ListingData(
+            val children: List<RedditChildrenResponse>,
+            val after: String?,
+            val before: String?
+    )
+    data class RedditChildrenResponse(val data: RedditPost)
+*/
     companion object {
         // Leave this as a simple, base URL.  That way, we can have many different
         // functions (above) that access different "paths" on this server

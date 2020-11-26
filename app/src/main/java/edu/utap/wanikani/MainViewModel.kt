@@ -14,7 +14,7 @@ class MainViewModel : ViewModel() {
 
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
-    private val wanikanisubject = MutableLiveData<List<WanikaniSubjects>>()
+    private val wanikanisubject = MutableLiveData<WanikaniSubjects>()
 
     init {
        netRefresh()
@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
         }
     }
     // XXX Another function is necessary
-    fun observeWanikaniSubject() : LiveData<List<WanikaniSubjects>> {
+    fun observeWanikaniSubject() : LiveData<WanikaniSubjects> {
         return wanikanisubject
     }
 

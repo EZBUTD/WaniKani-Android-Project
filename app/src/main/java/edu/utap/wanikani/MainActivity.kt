@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             // No back stack for home
-            .add(R.id.main_frame, homeFragment)
+            .replace(R.id.main_frame, homeFragment)
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()

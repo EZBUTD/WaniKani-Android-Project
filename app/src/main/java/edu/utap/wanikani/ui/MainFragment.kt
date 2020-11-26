@@ -37,9 +37,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         }
     }
 
-    private val viewModel: MainViewModel
-    // XXX initialize the viewModel
-            by activityViewModels()
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +57,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
             Observer {
                 if (it != null) {
-                    val subject = it[0].characters
+                    val subject = it.cha
                     Log.d("XXXFrag", "My subject character is ${subject}")
                 } else{
                     Log.d("XXXFrag", "subject is null?")
@@ -75,6 +73,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        startBut.setOnClickListener{
+            val lessonFragment = Lesson.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.main_frame, lessonFragment)
+                .addToBackStack("backHome")
+                .commit()
+        }
 
         testBut.setOnClickListener{
             viewModel.netRefresh()
