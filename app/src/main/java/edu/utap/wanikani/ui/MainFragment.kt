@@ -79,7 +79,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         startBut.setOnClickListener{
-            val lessonFragment = Lesson.newInstance()
+            val lessonFragment = Lesson.newInstance(0)
             parentFragmentManager.beginTransaction()
                 .add(R.id.main_frame, lessonFragment)
                 .addToBackStack("backHome")
