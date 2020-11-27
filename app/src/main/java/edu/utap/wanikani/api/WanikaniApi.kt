@@ -27,10 +27,16 @@ interface WanikaniApi {
     //@GET("https://api.wanikani.com/v2/assignments.json")
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
-
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects/1?types=radical,kanji")
-    suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
+//    @GET("subjects/{id}")
+    suspend fun api_call(@Query("id") id: Int) : WanikaniResponse
+
+
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+//    @GET("subjects/1?types=radical,kanji")
+    @GET("subjects/{id}")
+    suspend fun single_character(@Path("id") id: Int) : WanikaniResponse
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @PUT("assignments/{id}/start")//example of moving a lesson into reviews once local session is done.

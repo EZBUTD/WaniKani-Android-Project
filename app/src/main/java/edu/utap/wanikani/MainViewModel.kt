@@ -17,7 +17,7 @@ class MainViewModel : ViewModel() {
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
     private val wanikanisubject = MutableLiveData<WanikaniSubjects>()
-    private val assignments=MutableLiveData<List<WanikaniAssignments>>()
+    private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
     private val assignments_ids=MutableLiveData<List<Int>>()
 
     init {
@@ -27,11 +27,20 @@ class MainViewModel : ViewModel() {
     fun netRefresh() {
         // XXX Write me.  This is where the network request is initiated.
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            wanikanisubject.postValue(repo.fetchVocab(1))
+            wanikanisubject.postValue(repo.fetchVocab(1))//need to figure out how to link the subject ID to this postvalue when we want to look something up...1=ground, 11=nine, for example.
+            subject_ids.postValue(repo.fetchAssignments())
+            assignments_ids.postValue(repo.fetchAssignments_ids())
 //            assignments.postValue(repo.fetchAssignments())
 
         }
     }
+    fun launch_subject_data(subject_id:Int){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            wanikanisubject.postValue(repo.fetchVocab(subject_id))
+        }
+    }
+
     // XXX Another function is necessary
     fun observeWanikaniSubject() : LiveData<WanikaniSubjects> {
         return wanikanisubject
@@ -50,14 +59,14 @@ class MainViewModel : ViewModel() {
     fun get_assignments(){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
-            assignments.postValue(repo.fetchAssignments())
+            subject_ids.postValue(repo.fetchAssignments())
         }
     }
 
 
     fun observeAssignments():LiveData<List<WanikaniAssignments>>{
-        var temp=assignments
-        return assignments
+        var temp=subject_ids
+        return subject_ids
     }
 
     fun get_assignments_ids(){

@@ -6,8 +6,8 @@ import edu.utap.wanikani.MainActivity
 
 class Repository(private val wanikaniApi: WanikaniApi) {
 
-    suspend fun fetchVocab(level : Int) : WanikaniSubjects? {
-        return wanikaniApi.api_call(level).data
+    suspend fun fetchVocab(id : Int) : WanikaniSubjects? {
+        return wanikaniApi.single_character(id).data
     }
 
     private fun unpackPosts(response:WanikaniApi.ListingData):  List<WanikaniAssignments> {

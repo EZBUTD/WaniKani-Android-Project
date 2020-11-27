@@ -32,6 +32,7 @@ class Lesson : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     private fun initCharacters(){
@@ -44,7 +45,8 @@ class Lesson : Fragment() {
 
     private fun initNameMnemonic_Examples(){
         tabTitleTV.text = radicalTabsTitles[0]
-        textBlockTV.text = debug_nameMnemonic[0]
+//        textBlockTV.text = debug_nameMnemonic[0]
+        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
 
         nameTV.setOnClickListener{
             radicalTabsIdx=0

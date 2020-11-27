@@ -91,7 +91,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 //            viewModel.move_to_reviews(206307847)
             viewModel.get_assignments_ids()
 //            myprogresstextTV.setText(viewModel.observeAssignments().value?.get(1)?.sub_id.toString())
-            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
+//            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
         }
     }
 
