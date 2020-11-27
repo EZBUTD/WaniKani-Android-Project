@@ -16,6 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,6 +46,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
         }
+
     }
 
 
@@ -51,6 +54,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.main_fragment, container, false)
 
@@ -83,56 +87,12 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         }
 
         testBut.setOnClickListener{
-            viewModel.netRefresh()
+//            viewModel.netRefresh()
+            viewModel.move_to_reviews(206307847)
+//            viewModel.move_to_reviews()
+//            myprogresstextTV.setText(viewModel.observeAssignments().value?.id.toString())
         }
     }
 
-/*
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // XXX Write me.  viewModel should observe something
-        // When it gets what it is observing, it should index into it
-        // You might find the requireArguments() function useful
-        // You should "turn off" the swipe refresh spinner.  You might
-        // find the requireActivity() function useful for this.
 
-        viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
-            Observer {
-                if (it != null) {
-                    val subject = it[0].characters
-                    Log.d("XXXFrag", "My subject character is ${subject}")
-                } else{
-                    Log.d("XXXFrag", "subject is null")
-
-                }
-            }
-        )
-
-        testBut.setOnClickListener{
-            viewModel.netRefresh()
-        }
-
-    }
-*/
-    /*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String) =
-            MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                }
-            }
-    }
-
-     */
 }

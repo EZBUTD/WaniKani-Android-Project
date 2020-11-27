@@ -2,6 +2,7 @@ package edu.utap.wanikani.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import org.json.JSONArray
 
 data class WanikaniSubjects  (
     //OLD API:
@@ -34,5 +35,17 @@ data class WanikaniSubjects  (
     val reading_mnemonic : String
 
          */
+
+)
+
+data class WanikaniAssignments  (
+        @SerializedName("id")
+        val id:Int
+//        @SerializedName("object")
+//        val obj:String,
+//        @SerializedName("url")
+//        val url:String,
+//        @SerializedName("data")
+//        val data:JSONArray
 
 )

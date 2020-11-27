@@ -6,9 +6,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 import retrofit2.http.Headers
-import retrofit2.http.Query
 import java.io.IOException
 
 
@@ -27,7 +26,16 @@ interface WanikaniApi {
     @GET("subjects/1?types=radical,kanji")
     suspend fun api_call(@Query("levels") value: Int) : WanikaniResponse
 
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @PUT("assignments/{id}/start")//example of moving a lesson into reviews once local session is done.
+    suspend fun start_assignment(@Path("id") id:Int)
+
+//    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+//    @GET("assignments")
+//    suspend fun assignment_call() : List<WaniKaniResponse_assignment>
+
     data class WanikaniResponse(val data: WanikaniSubjects)
+//    data class WaniKaniResponse_assignment(val data:WanikaniAssignments)
 
     /*
     class ListingResponse(val data: ListingData)
