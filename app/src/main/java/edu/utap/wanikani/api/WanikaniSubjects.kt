@@ -39,6 +39,8 @@ data class WanikaniSubjects  (
 )
 
 data class WanikaniAssignments  (
-        @SerializedName("id[0]")
-        val id:Int
+//        @SerializedName("id") //this is one layer up
+//        val id:Int,
+        @SerializedName("subject_id")
+        val sub_id:Int
 )

@@ -1,5 +1,10 @@
 package edu.utap.wanikani.api
 
+import android.text.SpannableString
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import okhttp3.*
 import okhttp3.internal.connection.ConnectInterceptor.intercept
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import retrofit2.http.Headers
 import java.io.IOException
+import java.lang.reflect.Type
 
 
 interface WanikaniApi {
@@ -32,15 +38,26 @@ interface WanikaniApi {
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("assignments")
-    suspend fun get_assignments(): ListingResponse
+    suspend fun get_assignments(): ListingData
 
-    class ListingResponse(val data: ListingData)
+
     class ListingData(
-        val children: List<WaniKaniChildrenResponse>
+        val data: List<WaniKaniChildrenResponse>
     )
-    data class WaniKaniChildrenResponse(val data:WanikaniAssignments)
+    data class WaniKaniChildrenResponse(val data:WanikaniAssignments, val id: Int)
 
     data class WanikaniResponse(val data: WanikaniSubjects)
+
+    class SpannableDeserializer : JsonDeserializer<SpannableString> {
+        // @Throws(JsonParseException::class)
+        override fun deserialize(
+            json: JsonElement,
+            typeOfT: Type,
+            context: JsonDeserializationContext
+        ): SpannableString {
+            return SpannableString(json.asString)
+        }
+    }
 
 
     /*
@@ -53,37 +70,70 @@ interface WanikaniApi {
     )
     data class RedditChildrenResponse(val data: RedditPost)
 */
+//    companion object {
+//        // Leave this as a simple, base URL.  That way, we can have many different
+//        // functions (above) that access different "paths" on this server
+//        // https://square.github.io/okhttp/4.x/okhttp/okhttp3/-http-url/
+//        var url = HttpUrl.Builder()
+//            .scheme("https")
+//            .host("api.wanikani.com")
+//            .build()
+//
+//        // Public create function that ties together building the base
+//        // URL and the private create function that initializes Retrofit
+//        fun create(): WanikaniApi = create(url)
+//        private fun create(httpUrl: HttpUrl): WanikaniApi {
+//            val client = OkHttpClient.Builder()
+//                .addInterceptor(HttpLoggingInterceptor().apply {
+//                    // Enable basic HTTP logging to help with debugging.
+//                    //this.level = HttpLoggingInterceptor.Level.BASIC
+//                    this.level = HttpLoggingInterceptor.Level.BODY
+//                })
+//                //.addInterceptor(BasicAuthInterceptor())       //Not sure why this doesn't work
+//                .build()
+//
+//                return Retrofit.Builder()
+//                //.baseUrl(httpUrl)
+//                .client(client)
+//                    .baseUrl("https://api.wanikani.com/v2/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build()
+//                .create(WanikaniApi::class.java)
+//        }
+//    }
     companion object {
-        // Leave this as a simple, base URL.  That way, we can have many different
-        // functions (above) that access different "paths" on this server
-        // https://square.github.io/okhttp/4.x/okhttp/okhttp3/-http-url/
-        var url = HttpUrl.Builder()
+        // Tell Gson to use our SpannableString deserializer
+        private fun buildGsonConverterFactory(): GsonConverterFactory {
+            val gsonBuilder = GsonBuilder().registerTypeAdapter(
+                SpannableString::class.java, SpannableDeserializer()
+            )
+            return GsonConverterFactory.create(gsonBuilder.create())
+        }
+        // Keep the base URL simple
+        //private const val BASE_URL = "https://www.reddit.com/"
+        var httpurl = HttpUrl.Builder()
             .scheme("https")
             .host("api.wanikani.com")
             .build()
-
-        // Public create function that ties together building the base
-        // URL and the private create function that initializes Retrofit
-        fun create(): WanikaniApi = create(url)
+        fun create(): WanikaniApi = create(httpurl)
         private fun create(httpUrl: HttpUrl): WanikaniApi {
             val client = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     // Enable basic HTTP logging to help with debugging.
-                    //this.level = HttpLoggingInterceptor.Level.BASIC
                     this.level = HttpLoggingInterceptor.Level.BODY
                 })
-                //.addInterceptor(BasicAuthInterceptor())       //Not sure why this doesn't work
                 .build()
-
-                return Retrofit.Builder()
-                //.baseUrl(httpUrl)
+            return Retrofit.Builder()
+                .baseUrl("https://api.wanikani.com/v2/")
                 .client(client)
-                    .baseUrl("https://api.wanikani.com/v2/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(buildGsonConverterFactory())
                 .build()
                 .create(WanikaniApi::class.java)
         }
     }
+
+
+
     //Found the below from: https://github.com/xiprox/WaniKani-for-Android/blob/master/WaniKani/src/tr/xip/wanikani/client/WaniKaniService.java
     // (Converted from Java to Kotlin by android studios)
     /*

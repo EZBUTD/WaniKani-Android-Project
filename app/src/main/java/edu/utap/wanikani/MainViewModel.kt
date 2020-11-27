@@ -8,6 +8,7 @@ import edu.utap.wanikani.api.Repository
 import edu.utap.wanikani.api.WanikaniApi
 import edu.utap.wanikani.api.WanikaniAssignments
 import edu.utap.wanikani.api.WanikaniSubjects
+import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,8 @@ class MainViewModel : ViewModel() {
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
     private val wanikanisubject = MutableLiveData<WanikaniSubjects>()
-    private val assignments=MutableLiveData<WanikaniAssignments>()
+    private val assignments=MutableLiveData<List<WanikaniAssignments>>()
+    private val assignments_ids=MutableLiveData<List<Int>>()
 
     init {
        netRefresh()
@@ -48,13 +50,26 @@ class MainViewModel : ViewModel() {
     fun get_assignments(){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
-            repo.fetchAssignments()
+            assignments.postValue(repo.fetchAssignments())
         }
     }
 
 
-//    fun observeAssignments():LiveData<WanikaniAssignments>{
-//        return assignments
-//    }
+    fun observeAssignments():LiveData<List<WanikaniAssignments>>{
+        var temp=assignments
+        return assignments
+    }
+
+    fun get_assignments_ids(){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            assignments_ids.postValue(repo.fetchAssignments_ids())
+        }
+    }
+
+    fun observeAssignment_ids():LiveData<List<Int>>{
+        var temp=assignments_ids
+        return assignments_ids
+    }
 
 }
