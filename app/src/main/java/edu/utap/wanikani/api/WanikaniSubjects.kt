@@ -39,13 +39,6 @@ data class WanikaniSubjects  (
 )
 
 data class WanikaniAssignments  (
-        @SerializedName("id")
+        @SerializedName("id[0]")
         val id:Int
-//        @SerializedName("object")
-//        val obj:String,
-//        @SerializedName("url")
-//        val url:String,
-//        @SerializedName("data")
-//        val data:JSONArray
-
 )

@@ -41,13 +41,15 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
             repo.start_assign(id)
-//        }}
-//        catch (e: Exception){
-//
-//        }
-
         }
 
+    }
+
+    fun get_assignments(){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            repo.fetchAssignments()
+        }
     }
 
 

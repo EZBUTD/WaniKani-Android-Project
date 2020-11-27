@@ -30,12 +30,18 @@ interface WanikaniApi {
     @PUT("assignments/{id}/start")//example of moving a lesson into reviews once local session is done.
     suspend fun start_assignment(@Path("id") id:Int)
 
-//    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-//    @GET("assignments")
-//    suspend fun assignment_call() : List<WaniKaniResponse_assignment>
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("assignments")
+    suspend fun get_assignments(): ListingResponse
+
+    class ListingResponse(val data: ListingData)
+    class ListingData(
+        val children: List<WaniKaniChildrenResponse>
+    )
+    data class WaniKaniChildrenResponse(val data:WanikaniAssignments)
 
     data class WanikaniResponse(val data: WanikaniSubjects)
-//    data class WaniKaniResponse_assignment(val data:WanikaniAssignments)
+
 
     /*
     class ListingResponse(val data: ListingData)

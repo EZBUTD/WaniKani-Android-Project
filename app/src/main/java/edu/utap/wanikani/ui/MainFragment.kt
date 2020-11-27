@@ -88,8 +88,11 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         testBut.setOnClickListener{
 //            viewModel.netRefresh()
-            viewModel.move_to_reviews(206307847)
-//            viewModel.move_to_reviews()
+//            viewModel.move_to_reviews(206307847)
+            viewModel.get_assignments()
+
+
+
 //            myprogresstextTV.setText(viewModel.observeAssignments().value?.id.toString())
         }
     }
