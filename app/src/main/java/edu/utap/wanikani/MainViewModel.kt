@@ -16,7 +16,7 @@ class MainViewModel : ViewModel() {
 
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
-    private val wanikanisubject = MutableLiveData<WanikaniSubjects>()
+    private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
     private val assignments_ids=MutableLiveData<List<Int>>()
 
@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
     fun netRefresh() {
         // XXX Write me.  This is where the network request is initiated.
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            wanikanisubject.postValue(repo.fetchVocab(1))//need to figure out how to link the subject ID to this postvalue when we want to look something up...1=ground, 11=nine, for example.
+//            wanikanisubject.postValue(repo.fetchVocab(1))//need to figure out how to link the subject ID to this postvalue when we want to look something up...1=ground, 11=nine, for example.
             subject_ids.postValue(repo.fetchAssignments())
             assignments_ids.postValue(repo.fetchAssignments_ids())
 //            assignments.postValue(repo.fetchAssignments())
@@ -37,12 +37,21 @@ class MainViewModel : ViewModel() {
     fun launch_subject_data(subject_id:Int){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
-            wanikanisubject.postValue(repo.fetchVocab(subject_id))
+            var temp=subject_id
+            var temp2=repo.fetchVocab(subject_id).value
+            wanikanisubject.postValue(temp2)
         }
     }
 
+    fun create_list_subject_data(subject_ids:MutableLiveData<List<WanikaniAssignments>>){
+//        for x in subject_ids{
+//
+//        }
+    }
+
     // XXX Another function is necessary
-    fun observeWanikaniSubject() : LiveData<WanikaniSubjects> {
+    fun observeWanikaniSubject() : MutableLiveData<WanikaniSubjects> {
+        var temp=wanikanisubject
         return wanikanisubject
     }
 
@@ -51,9 +60,8 @@ class MainViewModel : ViewModel() {
 //        try{
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
-            repo.start_assign(id)
+            repo.start_assign(id)//this should be assignment id
         }
-
     }
 
     fun get_assignments(){
@@ -64,7 +72,7 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun observeAssignments():LiveData<List<WanikaniAssignments>>{
+    fun observeSubjects():LiveData<List<WanikaniAssignments>>{
         var temp=subject_ids
         return subject_ids
     }

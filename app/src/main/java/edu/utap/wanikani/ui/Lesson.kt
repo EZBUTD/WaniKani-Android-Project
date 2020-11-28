@@ -11,8 +11,13 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.replace
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
+import edu.utap.wanikani.api.WanikaniApi
+import edu.utap.wanikani.api.WanikaniSubjects
 import kotlinx.android.synthetic.main.fragment_lesson.*
 
 class Lesson : Fragment() {
@@ -33,6 +38,8 @@ class Lesson : Fragment() {
     private val debug_meaning : List<String> = listOf("Ground", "Fins")
     private val debug_nameMnemonic :List<String> = listOf("This radical consists of a single, horizontal stroke. What's the biggest, single, horizontal stroke? That's the ground. Look at the ground, look at this radical, now look at the ground again. Kind of the same, right?", "Picture a fish. Now picture the fish a little worse, like a child's drawing of the fish. Now erase the fish's body and... you're left with two fins! Do you see these two fins? Yeah, you see them.")
     private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
+
+    private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
     //I think you would need a lateinit var like this? I'm not sure
     // private lateinit var lessonCharacters : List<String>
@@ -59,9 +66,41 @@ class Lesson : Fragment() {
         kanjiTab3TV.visibility = View.INVISIBLE
         kanjiTab4TV.visibility = View.INVISIBLE
 
+            //set up subject info during init
+        val subjects=viewModel.observeSubjects()
+        val subject_1= subjects.value?.get(0)?.sub_id
+        val subjects_length=subjects.value?.size
+
+        for(i in 1..5){
+            viewModel.launch_subject_data(subjects.value!!.get(i).sub_id)
+            var wait=true
+            while(wait){
+                viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+                    Observer {
+                        if (it != null) {
+                            val meaning_mnemonic = it.meaning_mnemonic
+                            Log.d("XXXFrag", "My meaning_mnemonic character is ${meaning_mnemonic}")
+                            var temp=subject_meanings_list
+                            subject_meanings_list.add(it)
+                            wait=false
+                        } else{
+                            Log.d("XXXFrag", "subject is null?")
+                            wait=false
+                        }
+                    })
+            }
+
+            Log.d("XXXFrag", "end of for loop")
+//            var returned_value=viewModel.observeWanikaniSubject()
+
+        }
+
         tabTitleTV.text = radicalTabsTitles[0]
 //        textBlockTV.text = debug_nameMnemonic[0]
-        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
+//        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
+        var temp=subject_meanings_list
+        textBlockTV.text= subject_meanings_list[0].meaning_mnemonic
+
 
         radTab1TV.setOnClickListener{
             currentTabIdx=0

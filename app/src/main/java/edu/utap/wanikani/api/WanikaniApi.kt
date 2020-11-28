@@ -28,9 +28,9 @@ interface WanikaniApi {
     //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("subjects/1?types=radical,kanji")
+    @GET("subjects/?")
 //    @GET("subjects/{id}")
-    suspend fun api_call(@Query("id") id: Int) : WanikaniResponse
+    suspend fun api_call(@Query("level") level: Int) : List<WanikaniResponse>
 
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
