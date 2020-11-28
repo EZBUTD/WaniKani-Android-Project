@@ -43,7 +43,7 @@ interface WanikaniApi {
     suspend fun start_assignment(@Path("id") id:Int)
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    @GET("assignments")
+    @GET("assignments?immediately_available_for_lessons") //this is to filter on available for lessons.
     suspend fun get_assignments(): ListingData
 
 

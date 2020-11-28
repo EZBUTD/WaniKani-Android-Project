@@ -56,6 +56,7 @@ class Lesson : Fragment() {
 
     private fun initCharacters(){
         //charTV.text = debug_characters[0]
+        var temp=subject_meanings_list
         charTV.text = subject_meanings_list[counter].cha
     }
 
@@ -150,27 +151,6 @@ class Lesson : Fragment() {
 
             val subjects=viewModel.observeSubjects()
             viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
-//            viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
-//                Observer {
-//                    if (it != null) {
-//                        val meaning_mnemonic = it.meaning_mnemonic
-//                        Log.d("XXXObserver", "My meaning_mnemonic character is ${meaning_mnemonic} size is ${subject_meanings_list.size}")
-//                        var temp=subject_meanings_list
-//                        subject_meanings_list.add(it)
-//
-//                        for (i in 0 until tabCount) {
-//                            lessonDone.add(false)
-//                            Log.d("XXXlessonDone", "$i is set to false")
-//                        }
-//                        lessonDone[0] = true
-//                        initTabs()
-//                        initCharacters()
-//                        initMeaning()
-//
-//                    } else{
-//                        Log.d("XXXFrag", "subject is null?")
-//                    }
-//                })
 
 
 //            charTV.text = debug_characters[currentIdx]
