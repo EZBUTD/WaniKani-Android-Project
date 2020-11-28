@@ -30,6 +30,8 @@ data class WanikaniSubjects  (
 //
     @SerializedName("meaning_mnemonic")
     val meaning_mnemonic : String,
+    @SerializedName("meanings")
+    val meanings : MutableList<Any>,
 
     @SerializedName("reading_mnemonic")
     val reading_mnemonic : String

@@ -34,12 +34,14 @@ class Lesson : Fragment() {
     private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Examples")
 
     //Some hardcoded values just to see what my layout looks like.
-    private val debug_characters : List<String> = listOf("一", "ハ")
-    private val debug_meaning : List<String> = listOf("Ground", "Fins")
-    private val debug_nameMnemonic :List<String> = listOf("This radical consists of a single, horizontal stroke. What's the biggest, single, horizontal stroke? That's the ground. Look at the ground, look at this radical, now look at the ground again. Kind of the same, right?", "Picture a fish. Now picture the fish a little worse, like a child's drawing of the fish. Now erase the fish's body and... you're left with two fins! Do you see these two fins? Yeah, you see them.")
-    private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
+//    private val debug_characters : List<String> = listOf("一", "ハ")
+//    private val debug_meaning : List<String> = listOf("Ground", "Fins")
+//    private val debug_nameMnemonic :List<String> = listOf("This radical consists of a single, horizontal stroke. What's the biggest, single, horizontal stroke? That's the ground. Look at the ground, look at this radical, now look at the ground again. Kind of the same, right?", "Picture a fish. Now picture the fish a little worse, like a child's drawing of the fish. Now erase the fish's body and... you're left with two fins! Do you see these two fins? Yeah, you see them.")
+//    private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
 
     private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
+    private var counter=0
+//    private val subjects=viewModel.observeSubjects()
 
     //I think you would need a lateinit var like this? I'm not sure
      //private lateinit var mySubjects : List<WanikaniSubjects>
@@ -54,11 +56,12 @@ class Lesson : Fragment() {
 
     private fun initCharacters(){
         //charTV.text = debug_characters[0]
-        charTV.text = subject_meanings_list[0].cha
+        charTV.text = subject_meanings_list[counter].cha
     }
 
     private fun initMeaning(){
-        meaningTV.text = debug_meaning[0]
+        var temp=subject_meanings_list
+        meaningTV.text = subject_meanings_list[counter].meanings[0].toString() //need to fix this later
     }
 
     private fun initTabs(){
@@ -73,7 +76,7 @@ class Lesson : Fragment() {
         tabTitleTV.text = radicalTabsTitles[0]
 //        textBlockTV.text = debug_nameMnemonic[0]
 //        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
-        textBlockTV.text= subject_meanings_list[0].meaning_mnemonic
+        textBlockTV.text= subject_meanings_list[counter].meaning_mnemonic
 
 
         radTab1TV.setOnClickListener{
@@ -117,9 +120,9 @@ class Lesson : Fragment() {
         tabTitleTV.text = radicalTabsTitles[tabIdx]
 
         if (tabIdx == 0){
-            textBlockTV.text = debug_nameMnemonic[currentIdx]
+//            textBlockTV.text = debug_nameMnemonic[currentIdx]
         } else {
-            textBlockTV.text = debug_examples[currentIdx]
+//            textBlockTV.text = debug_examples[currentIdx]
         }
     }
 
@@ -129,8 +132,8 @@ class Lesson : Fragment() {
             currentTabIdx=0
             openTab(currentTabIdx)
 
-            charTV.text = debug_characters[currentIdx]
-            meaningTV.text = debug_meaning[currentIdx]
+//            charTV.text = debug_characters[currentIdx]
+//            meaningTV.text = debug_meaning[currentIdx]
             lessonDone[currentIdx*tabCount]=true
         }
 
@@ -143,9 +146,35 @@ class Lesson : Fragment() {
                 currentTabIdx++
                 openTab(currentTabIdx)
             }
+            counter++
 
-            charTV.text = debug_characters[currentIdx]
-            meaningTV.text = debug_meaning[currentIdx]
+            val subjects=viewModel.observeSubjects()
+            viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
+//            viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+//                Observer {
+//                    if (it != null) {
+//                        val meaning_mnemonic = it.meaning_mnemonic
+//                        Log.d("XXXObserver", "My meaning_mnemonic character is ${meaning_mnemonic} size is ${subject_meanings_list.size}")
+//                        var temp=subject_meanings_list
+//                        subject_meanings_list.add(it)
+//
+//                        for (i in 0 until tabCount) {
+//                            lessonDone.add(false)
+//                            Log.d("XXXlessonDone", "$i is set to false")
+//                        }
+//                        lessonDone[0] = true
+//                        initTabs()
+//                        initCharacters()
+//                        initMeaning()
+//
+//                    } else{
+//                        Log.d("XXXFrag", "subject is null?")
+//                    }
+//                })
+
+
+//            charTV.text = debug_characters[currentIdx]
+//            meaningTV.text = debug_meaning[currentIdx]
             val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
             lessonDone[lessonDoneIdx]=true
             Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
@@ -155,16 +184,18 @@ class Lesson : Fragment() {
 
     private fun decrementIdx() {
         if( currentIdx == 0)
-            currentIdx = debug_characters.size-1
+//            currentIdx=
+//            currentIdx = debug_characters.size-1
+
         else
             currentIdx--
     }
 
     private fun incrementIdx() {
-        if( currentIdx == debug_characters.size-1)
-            currentIdx = 0
-        else
-            currentIdx++
+//        if( currentIdx == debug_characters.size-1)
+//            currentIdx = 0
+//        else
+//            currentIdx++
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -175,9 +206,8 @@ class Lesson : Fragment() {
         val subject_1= subjects.value?.get(0)?.sub_id
         val subjects_length=subjects.value?.size
 
-        for(i in 1..5){
-            viewModel.launch_subject_data(subjects.value!!.get(i).sub_id)
-        }
+        viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
+
 
         viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
                 Observer {
