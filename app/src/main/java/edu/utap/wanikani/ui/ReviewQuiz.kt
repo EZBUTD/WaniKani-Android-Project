@@ -48,8 +48,9 @@ class ReviewQuiz : Fragment() {
     private fun checkAnswer() {
         if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
             answerLay.setBackgroundColor(Color.GREEN)
+            responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true
-            Thread.sleep(500)
+            //Thread.sleep(2000)
             Log.d("XXXcheckanswer", "correct answer")
 
             if (lessonFinished()){
@@ -63,7 +64,8 @@ class ReviewQuiz : Fragment() {
                 nextQuestion()
             } else {
                 answerLay.setBackgroundColor(Color.RED)
-                Thread.sleep(500)
+                responseET.setBackgroundColor(Color.RED)
+                //Thread.sleep(2000)
                 tries++
             }
         }
@@ -85,6 +87,7 @@ class ReviewQuiz : Fragment() {
 
         currentIdx = nextIdx
         responseET.setBackgroundColor(Color.WHITE)
+        answerLay.setBackgroundColor(Color.WHITE)
         charTV.text = debug_characters[currentIdx]
         responseET.text.clear()
     }
@@ -107,6 +110,8 @@ class ReviewQuiz : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this){
             parentFragmentManager.popBackStack()
         }
+
+
         return view
     }
 

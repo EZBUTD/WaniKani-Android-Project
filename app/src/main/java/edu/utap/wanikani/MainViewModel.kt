@@ -1,5 +1,6 @@
 package edu.utap.wanikani
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ class MainViewModel : ViewModel() {
         {
             var temp=subject_id
             var temp2=repo.fetchVocab(subject_id).value
+            Log.d("XXXsubjectdata", "launch subject data is $temp2")
             wanikanisubject.postValue(temp2)
         }
     }

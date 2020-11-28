@@ -42,7 +42,7 @@ class Lesson : Fragment() {
     private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
     //I think you would need a lateinit var like this? I'm not sure
-    // private lateinit var lessonCharacters : List<String>
+     //private lateinit var mySubjects : List<WanikaniSubjects>
 
     //private lateinit var lessonDone : MutableList<Boolean>          //Use this to check that User has gone through each tab in the lesson
     private var lessonDone : MutableList<Boolean> = arrayListOf()          //Use this to check that User has gone through each tab in the lesson
@@ -53,7 +53,8 @@ class Lesson : Fragment() {
     }
 
     private fun initCharacters(){
-        charTV.text = debug_characters[0]
+        //charTV.text = debug_characters[0]
+        charTV.text = subject_meanings_list[0].cha
     }
 
     private fun initMeaning(){
@@ -67,38 +68,11 @@ class Lesson : Fragment() {
         kanjiTab4TV.visibility = View.INVISIBLE
 
             //set up subject info during init
-        val subjects=viewModel.observeSubjects()
-        val subject_1= subjects.value?.get(0)?.sub_id
-        val subjects_length=subjects.value?.size
 
-        for(i in 1..5){
-            viewModel.launch_subject_data(subjects.value!!.get(i).sub_id)
-            var wait=true
-            while(wait){
-                viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
-                    Observer {
-                        if (it != null) {
-                            val meaning_mnemonic = it.meaning_mnemonic
-                            Log.d("XXXFrag", "My meaning_mnemonic character is ${meaning_mnemonic}")
-                            var temp=subject_meanings_list
-                            subject_meanings_list.add(it)
-                            wait=false
-                        } else{
-                            Log.d("XXXFrag", "subject is null?")
-                            wait=false
-                        }
-                    })
-            }
-
-            Log.d("XXXFrag", "end of for loop")
-//            var returned_value=viewModel.observeWanikaniSubject()
-
-        }
 
         tabTitleTV.text = radicalTabsTitles[0]
 //        textBlockTV.text = debug_nameMnemonic[0]
 //        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
-        var temp=subject_meanings_list
         textBlockTV.text= subject_meanings_list[0].meaning_mnemonic
 
 
@@ -197,6 +171,36 @@ class Lesson : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_lesson, container, false)
 
+        val subjects=viewModel.observeSubjects()
+        val subject_1= subjects.value?.get(0)?.sub_id
+        val subjects_length=subjects.value?.size
+
+        for(i in 1..5){
+            viewModel.launch_subject_data(subjects.value!!.get(i).sub_id)
+        }
+
+        viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+                Observer {
+                    if (it != null) {
+                        val meaning_mnemonic = it.meaning_mnemonic
+                        Log.d("XXXObserver", "My meaning_mnemonic character is ${meaning_mnemonic} size is ${subject_meanings_list.size}")
+                        var temp=subject_meanings_list
+                        subject_meanings_list.add(it)
+
+                        for (i in 0 until tabCount) {
+                            lessonDone.add(false)
+                            Log.d("XXXlessonDone", "$i is set to false")
+                        }
+                        lessonDone[0] = true
+                        initTabs()
+                        initCharacters()
+                        initMeaning()
+
+                    } else{
+                        Log.d("XXXFrag", "subject is null?")
+                    }
+                })
+
         requireActivity().onBackPressedDispatcher.addCallback(this){
             parentFragmentManager.popBackStack()
         }
@@ -217,16 +221,16 @@ class Lesson : Fragment() {
         }
 
         //I used a 2d array that's been flattened to 1d
-        for (i in 0 until debug_characters.size * tabCount) {
-            lessonDone.add(false)
-            Log.d("XXXlessonDone", "$i is set to false")
-        }
-        lessonDone[0] = true
+        //for (i in 0 until debug_characters.size * tabCount) {
+        //    lessonDone.add(false)
+        //    Log.d("XXXlessonDone", "$i is set to false")
+        //}
+        //lessonDone[0] = true
 
         Log.d("XXXtypeid", "$myTypeId")
-        initCharacters()
-        initMeaning()
-        initTabs()
+        //initCharacters()
+        //initMeaning()
+        //initTabs()
         initQuiz()
         initLeftRightArrow()
     }
