@@ -62,7 +62,7 @@ class Lesson : Fragment() {
 
     private fun initMeaning(){
         var temp=subject_meanings_list
-        meaningTV.text = subject_meanings_list[counter].meanings[0].toString() //need to fix this later
+        meaningTV.text = subject_meanings_list[counter].meanings[0].toString().split(",")[0].removePrefix("{meaning=") //dirty way to clean up the meanings
     }
 
     private fun initTabs(){
