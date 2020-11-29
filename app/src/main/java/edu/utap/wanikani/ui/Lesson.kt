@@ -96,6 +96,7 @@ class Lesson : Fragment() {
         quizBut.isEnabled=false
 
         quizBut.setOnClickListener{
+            viewModel.store_for_lesson(subject_meanings_list)
             val quizFragment = ReviewQuiz.newInstance(myTypeId)
             parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frame, quizFragment)

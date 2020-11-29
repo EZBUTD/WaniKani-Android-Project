@@ -11,6 +11,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
+import edu.utap.wanikani.api.WanikaniSubjects
 import kotlinx.android.synthetic.main.fragment_review_quiz.*
 
 class ReviewQuiz : Fragment() {
@@ -25,14 +26,20 @@ class ReviewQuiz : Fragment() {
     //fragment tabs for the radicals section
 
     //Some hardcoded values just to see what my layout looks like.
-    private val debug_characters : List<String> = listOf("一", "ハ")
-    private val debug_answers : List<String> = listOf("Ground", "Fins")
+//    private val debug_characters : List<String> = listOf("一", "ハ")
+//    private val debug_answers : List<String> = listOf("Ground", "Fins")
+    private var quiz_data= mutableListOf<WanikaniSubjects>()
+    private var characters= mutableListOf<String>()
+    private var answers= mutableListOf<String>()
+
 
     //private lateinit var questionDone : MutableList<Boolean>
     private var questionDone : MutableList<Boolean> = arrayListOf()
 
     private fun initCharacters(){
-        charTV.text = debug_characters[0]
+//        charTV.text = debug_characters[0]
+        charTV.text=characters[0]
+
     }
 
     private fun initTitle(){
@@ -46,7 +53,8 @@ class ReviewQuiz : Fragment() {
     }
 
     private fun checkAnswer() {
-        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
+//        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
+        if (responseET.text.toString().toLowerCase() == answers[currentIdx].toLowerCase()) {
             answerLay.setBackgroundColor(Color.GREEN)
             responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true
@@ -88,7 +96,8 @@ class ReviewQuiz : Fragment() {
         currentIdx = nextIdx
         responseET.setBackgroundColor(Color.WHITE)
         answerLay.setBackgroundColor(Color.WHITE)
-        charTV.text = debug_characters[currentIdx]
+//        charTV.text = debug_characters[currentIdx]
+        charTV.text=characters[currentIdx]
         responseET.text.clear()
     }
 
@@ -119,8 +128,15 @@ class ReviewQuiz : Fragment() {
         if (this.arguments != null) {
             myTypeId = this.requireArguments().getInt(Lesson.typeIdKey)
         }
+        quiz_data=viewModel.observe_quiz_data()
+        for(i in quiz_data){
+            answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
+            characters.add(i.cha)
+        }
+
         Log.d("XXXtypeid", "$myTypeId")
-        for (i in debug_answers.indices){
+//        for (i in debug_answers.indices){
+        for (i in answers.indices){
             //questionDone[i] = false
             questionDone.add(false)
             Log.d("XXXquizDone", "$i is set to false")

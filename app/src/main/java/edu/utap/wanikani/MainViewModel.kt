@@ -20,6 +20,7 @@ class MainViewModel : ViewModel() {
     private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
     private val assignments_ids=MutableLiveData<List<Int>>()
+    private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
     init {
        netRefresh()
@@ -89,6 +90,14 @@ class MainViewModel : ViewModel() {
     fun observeAssignment_ids():LiveData<List<Int>>{
         var temp=assignments_ids
         return assignments_ids
+    }
+
+    fun store_for_lesson(data: MutableList<WanikaniSubjects>){
+        subject_meanings_list=data
+    }
+
+    fun observe_quiz_data():MutableList<WanikaniSubjects>{
+        return subject_meanings_list
     }
 
 }

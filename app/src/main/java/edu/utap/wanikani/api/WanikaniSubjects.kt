@@ -38,6 +38,8 @@ data class WanikaniSubjects  (
 
 
 
+
+
 )
 
 data class WanikaniAssignments  (
