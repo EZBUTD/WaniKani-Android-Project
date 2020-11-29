@@ -86,6 +86,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                 .commit()
         }
 
+        reviewBut.setOnClickListener{
+            val reviewFragment = ReviewQuiz.newInstance(0)
+            parentFragmentManager.beginTransaction()
+                    .add(R.id.main_frame, reviewFragment)
+                    .addToBackStack("backHome")
+                    .commit()
+        }
+
         testBut.setOnClickListener{
 //            viewModel.netRefresh()
 //            viewModel.move_to_reviews(206307847)
