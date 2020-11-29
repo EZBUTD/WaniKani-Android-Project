@@ -34,7 +34,9 @@ data class WanikaniSubjects  (
     val meanings : MutableList<Any>,
 
     @SerializedName("reading_mnemonic")
-    val reading_mnemonic : String
+    val reading_mnemonic : String,
+    @SerializedName("id")
+        var subject_id : Int
 
 
 

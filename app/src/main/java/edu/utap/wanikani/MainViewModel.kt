@@ -19,7 +19,7 @@ class MainViewModel : ViewModel() {
     private val repo = Repository(wanikaniApi)
     private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
-    private val assignments_ids=MutableLiveData<List<Int>>()
+    private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
     init {
@@ -87,7 +87,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun observeAssignment_ids():LiveData<List<Int>>{
+    fun observeAssignment_ids():MutableLiveData<HashMap<Int,Int>>{
         var temp=assignments_ids
         return assignments_ids
     }

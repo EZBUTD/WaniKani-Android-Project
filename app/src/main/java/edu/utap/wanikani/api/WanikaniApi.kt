@@ -52,7 +52,7 @@ interface WanikaniApi {
     )
     data class WaniKaniChildrenResponse(val data:WanikaniAssignments, val id: Int)
 
-    data class WanikaniResponse(val data: WanikaniSubjects)
+    data class WanikaniResponse(val data: WanikaniSubjects, val id:Int)
 
     class SpannableDeserializer : JsonDeserializer<SpannableString> {
         // @Throws(JsonParseException::class)

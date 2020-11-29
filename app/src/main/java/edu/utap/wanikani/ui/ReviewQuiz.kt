@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import edu.utap.wanikani.api.WanikaniSubjects
@@ -31,6 +32,7 @@ class ReviewQuiz : Fragment() {
     private var quiz_data= mutableListOf<WanikaniSubjects>()
     private var characters= mutableListOf<String>()
     private var answers= mutableListOf<String>()
+    private var assignments_ids= HashMap<Int,Int>()
 
 
     //private lateinit var questionDone : MutableList<Boolean>
@@ -62,6 +64,14 @@ class ReviewQuiz : Fragment() {
             Log.d("XXXcheckanswer", "correct answer")
 
             if (lessonFinished()){
+                //submit put requests to mark items as succesfully completed and move into review queue
+                for(item in quiz_data){
+                    var temp2=assignments_ids
+                    var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
+                    //check if key actually is right
+                    var temp=assignment_id_key
+                    viewModel.move_to_reviews(assignment_id_key)
+                }
                 parentFragmentManager.popBackStack()
                 parentFragmentManager.popBackStack()
             } else
@@ -133,6 +143,9 @@ class ReviewQuiz : Fragment() {
             answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
             characters.add(i.cha)
         }
+
+        assignments_ids= viewModel.observeAssignment_ids().value!!
+
 
         Log.d("XXXtypeid", "$myTypeId")
 //        for (i in debug_answers.indices){

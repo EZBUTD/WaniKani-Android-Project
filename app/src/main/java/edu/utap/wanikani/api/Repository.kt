@@ -6,9 +6,12 @@ import androidx.lifecycle.MutableLiveData
 class Repository(private val wanikaniApi: WanikaniApi) {
 
     suspend fun fetchVocab(id: Int) : MutableLiveData<WanikaniSubjects> {
-        var temp=MutableLiveData<WanikaniSubjects>()
-        temp= MutableLiveData(wanikaniApi.single_character(id).data)
-        return temp
+//        var temp=MutableLiveData<WanikaniSubjects>()
+//        temp= MutableLiveData(wanikaniApi.single_character(id).data)
+        var api_response=wanikaniApi.single_character(id)
+        var answer=api_response.data
+        answer.subject_id= (api_response.id)
+        return MutableLiveData(answer)
 
 //        return wanikaniApi.single_character(id).data
     }
@@ -26,16 +29,18 @@ class Repository(private val wanikaniApi: WanikaniApi) {
         return unpackPosts(wanikaniApi.get_assignments())
     }
 
-    private fun unpackPosts_assignments(response: WanikaniApi.ListingData):  List<Int> {
+//    private fun unpackPosts_assignments(response: WanikaniApi.ListingData):  List<Int> {
+    private fun unpackPosts_assignments(response: WanikaniApi.ListingData):  HashMap<Int,Int> {
         // XXX Write me.
-        var postlist= mutableListOf<Int>()
+        var postlist= HashMap<Int,Int>()
         for(i in response.data){
-            postlist.add(i.id)
+//            postlist.add(i.assignment_id)
+            postlist[i.id]=i.data.sub_id
         }
         return postlist
     }
 
-    suspend fun fetchAssignments_ids() : List<Int> {
+    suspend fun fetchAssignments_ids() : HashMap<Int,Int> {
         return unpackPosts_assignments(wanikaniApi.get_assignments())
     }
 
