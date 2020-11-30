@@ -98,9 +98,12 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         testBut.setOnClickListener{
 //            viewModel.netRefresh()
 //            viewModel.move_to_reviews(206307847)
-            viewModel.get_assignments_ids()
-            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
+//            viewModel.get_assignments_ids()
+//            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
+            val data= "1,2,3"
+            viewModel.get_subject_data(data)
+            viewModel.observeSubject_data()
         }
     }
 

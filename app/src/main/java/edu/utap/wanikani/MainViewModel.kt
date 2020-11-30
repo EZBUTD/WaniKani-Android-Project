@@ -19,6 +19,7 @@ class MainViewModel : ViewModel() {
     private val repo = Repository(wanikaniApi)
     private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
+    private val subject_Data=MutableLiveData<List<WanikaniAssignments>>()
     private val subject_ids_for_review=MutableLiveData<List<WanikaniAssignments>>()
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
@@ -74,6 +75,17 @@ class MainViewModel : ViewModel() {
         {
             subject_ids.postValue(repo.fetchAssignments())
         }
+    }
+    fun get_subject_data(data:String){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            subject_Data.postValue(repo.fetch_subjects_data(data))
+        }
+    }
+
+    fun observeSubject_data():LiveData<List<WanikaniAssignments>>{
+        var temp=subject_Data
+        return subject_Data
     }
 
 

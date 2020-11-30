@@ -48,5 +48,15 @@ data class WanikaniAssignments  (
 //        @SerializedName("id") //this is one layer up
 //        val id:Int,
         @SerializedName("subject_id")
-        val sub_id:Int
+        var sub_id:Int,
+
+        @SerializedName("meaning_mnemonic")
+        val meaning_mnemonic : String,
+        @SerializedName("meanings")
+        val meanings : MutableList<Any>,
+
+        @SerializedName("reading_mnemonic")
+        val reading_mnemonic : String
+
+
 )
