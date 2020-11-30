@@ -87,7 +87,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         }
 
         reviewBut.setOnClickListener{
-            val reviewFragment = Review.newInstance(0)
+//            val reviewFragment = Review.newInstance(0)
+            val reviewFragment=Review_quiz_mod.newInstance(0)
             parentFragmentManager.beginTransaction()
                     .add(R.id.main_frame, reviewFragment)
                     .addToBackStack("backHome")
