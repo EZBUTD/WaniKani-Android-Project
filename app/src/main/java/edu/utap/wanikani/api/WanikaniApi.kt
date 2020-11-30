@@ -56,13 +56,15 @@ interface WanikaniApi {
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects?") //this is to filter on available for lessons.
-    suspend fun get_subjects_from_ids(@Query("ids", encoded = true) ids: String): List<WanikaniSubjects>
+    suspend fun get_subjects_from_ids(@Query("ids", encoded = true) ids: String): WanikaniSubjectsResponse
 
 
     class ListingData(
         val data: List<WaniKaniChildrenResponse>
     )
     data class WaniKaniChildrenResponse(val data:WanikaniAssignments, val id: Int)
+
+    data class WanikaniSubjectsResponse(val data:List<WanikaniResponse>)
 
     data class WanikaniResponse(val data: WanikaniSubjects, val id:Int)
 

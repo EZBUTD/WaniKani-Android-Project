@@ -78,14 +78,23 @@ class Repository(private val wanikaniApi: WanikaniApi) {
 
     //This function returns the available subjects from a string of comma separated ids
     suspend fun get_subjects_from_available_ids(available_subj_ids: String) : List<WanikaniSubjects> {
-        return wanikaniApi.get_subjects_from_ids(available_subj_ids)
+        //return wanikaniApi.get_subjects_from_ids(available_subj_ids)
+        return unpackSubjects(wanikaniApi.get_subjects_from_ids(available_subj_ids))
     }
 
     suspend fun fetchAssignments_ids() : HashMap<Int,Int> {
         return unpackPosts_assignments(wanikaniApi.get_assignments())
     }
 
+    private fun unpackSubjects(response: WanikaniApi.WanikaniSubjectsResponse) : List<WanikaniSubjects>{
+        var myListSubjects = mutableListOf<WanikaniSubjects>()
 
+        for (i in response.data){
+            myListSubjects.add(i.data)
+        }
+
+        return myListSubjects
+    }
 
 
     suspend fun start_assign(id: Int){

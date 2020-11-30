@@ -24,9 +24,12 @@ class MainViewModel : ViewModel() {
     private var available_subject_ids = MutableLiveData<List<Int>>().apply {
         value= listOf(0)
     }
+          /*
     private var available_subject_ids_string = MutableLiveData<String>().apply{
         value="0"
     }
+
+           */
     private var available_subjects = MutableLiveData<List<WanikaniSubjects>>()
 
     init {
@@ -38,7 +41,7 @@ class MainViewModel : ViewModel() {
     fun netIds (){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
             available_subject_ids.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments()))
-            available_subject_ids_string.postValue(repo.get_sub_ids_from_available_assignments_String(repo.get_available_assignments()))
+            //available_subject_ids_string.postValue(repo.get_sub_ids_from_available_assignments_String(repo.get_available_assignments()))
         }
     }
 

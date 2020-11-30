@@ -104,6 +104,19 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             //.removeSurrounding("[", "]")
             viewModel.netSubjects()
 
+            viewModel.observeAvailableSubjects().observe(viewLifecycleOwner,
+                    Observer {
+                        if (it!= null){
+                            for (i in it){
+                                Log.d("XXXwessubjects", "subject char is: ${i.cha}")
+                            }
+                        }
+                    })
+
+
+
+
+
             /*
             val data= "1,2,3"
             val data2 = listOf(1,2,3)
