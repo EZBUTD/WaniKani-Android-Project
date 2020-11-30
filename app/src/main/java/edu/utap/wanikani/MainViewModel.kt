@@ -1,10 +1,7 @@
 package edu.utap.wanikani
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import edu.utap.wanikani.api.Repository
 import edu.utap.wanikani.api.WanikaniApi
 import edu.utap.wanikani.api.WanikaniAssignments
@@ -24,9 +21,49 @@ class MainViewModel : ViewModel() {
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
-    init {
-       netRefresh()
+    private var available_subject_ids = MutableLiveData<List<Int>>().apply {
+        value= listOf(0)
     }
+    private var available_subject_ids_string = MutableLiveData<String>().apply{
+        value="0"
+    }
+    private var available_subjects = MutableLiveData<List<WanikaniSubjects>>()
+
+    init {
+        netRefresh()
+        netIds()
+    }
+
+    //This function sets the list of currently available IDs
+    fun netIds (){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            available_subject_ids.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments()))
+            available_subject_ids_string.postValue(repo.get_sub_ids_from_available_assignments_String(repo.get_available_assignments()))
+        }
+    }
+
+    fun netSubjects() {
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            //val mySubjIds = available_subject_ids_string.value.toString()
+            val mySubjIds = available_subject_ids.value?.joinToString(",")
+            available_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
+        }
+    }
+
+    fun observeAvailableSubjects() : MutableLiveData<List<WanikaniSubjects>>{
+        return available_subjects
+    }
+
+/*
+    private var availableSubjects = MediatorLiveData<WanikaniSubjects>().apply {
+        addSource(available_subject_ids){
+            val stringList = it.joinToString(separator = ",")
+           repo.get_subjects_from_available_ids(stringList)
+        }
+
+    }
+
+ */
 
     fun netRefresh() {
         // XXX Write me.  This is where the network request is initiated.
@@ -39,6 +76,8 @@ class MainViewModel : ViewModel() {
 
         }
     }
+
+
     fun launch_subject_data(subject_id:Int){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {

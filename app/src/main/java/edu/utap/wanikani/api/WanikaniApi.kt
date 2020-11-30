@@ -52,7 +52,11 @@ interface WanikaniApi {
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects?") //this is to filter on available for lessons.
-    suspend fun get_subjects(@Query("ids") ids: String): ListingData
+    suspend fun get_subjects(@Query("ids", encoded = true) ids: String): ListingData
+
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("subjects?") //this is to filter on available for lessons.
+    suspend fun get_subjects_from_ids(@Query("ids", encoded = true) ids: String): List<WanikaniSubjects>
 
 
     class ListingData(

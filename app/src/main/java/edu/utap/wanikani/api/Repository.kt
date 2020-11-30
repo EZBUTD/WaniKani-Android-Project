@@ -1,5 +1,6 @@
 package edu.utap.wanikani.api
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 
 
@@ -50,6 +51,34 @@ class Repository(private val wanikaniApi: WanikaniApi) {
 
         }
         return postlist
+    }
+
+    suspend fun get_available_assignments() : WanikaniApi.ListingData {
+        return wanikaniApi.get_assignments()
+    }
+
+    suspend fun get_sub_ids_from_available_assignments(response: WanikaniApi.ListingData):  List<Int> {
+        var listSubjectIds= mutableListOf<Int>()
+        for(i in response.data){
+            listSubjectIds.add(i.data.sub_id)
+        }
+        Log.d("XXXWes", "here is the list of $listSubjectIds . Here it is in comma separated form: ${listSubjectIds.joinToString(separator = ",")}")
+        return listSubjectIds
+    }
+
+    suspend fun get_sub_ids_from_available_assignments_String(response: WanikaniApi.ListingData):  String {
+        var listSubjectIds= mutableListOf<Int>()
+        for(i in response.data){
+            listSubjectIds.add(i.data.sub_id)
+        }
+
+        Log.d("XXXWes", "here is the list of $listSubjectIds . Here it is in comma separated form: ${listSubjectIds.joinToString(separator = ",")}")
+        return listSubjectIds.joinToString(separator = ",")
+    }
+
+    //This function returns the available subjects from a string of comma separated ids
+    suspend fun get_subjects_from_available_ids(available_subj_ids: String) : List<WanikaniSubjects> {
+        return wanikaniApi.get_subjects_from_ids(available_subj_ids)
     }
 
     suspend fun fetchAssignments_ids() : HashMap<Int,Int> {

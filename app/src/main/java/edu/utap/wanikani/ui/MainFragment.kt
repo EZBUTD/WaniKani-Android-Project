@@ -101,9 +101,21 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 //            viewModel.get_assignments_ids()
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
+            //.removeSurrounding("[", "]")
+            viewModel.netSubjects()
+
+            /*
             val data= "1,2,3"
-            viewModel.get_subject_data(data)
+            val data2 = listOf(1,2,3)
+            val data3 = data2.joinToString(separator = ",")
+            val new_data = arrayListOf(1.toString(), 2.toString(), 3.toString())
+            var new_data2 = new_data.joinToString(separator = ",")
+            Log.d("XXXcsvtest", "${new_data2}")
+            Log.d("XXXcsvtest", "${data3}")
+            viewModel.get_subject_data(new_data2)
             viewModel.observeSubject_data()
+
+             */
         }
     }
 
