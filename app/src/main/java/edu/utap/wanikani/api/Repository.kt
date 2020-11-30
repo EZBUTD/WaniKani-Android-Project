@@ -29,6 +29,10 @@ class Repository(private val wanikaniApi: WanikaniApi) {
         return unpackPosts(wanikaniApi.get_assignments())
     }
 
+    suspend fun fetchAssignments_for_review() : List<WanikaniAssignments> {
+        return unpackPosts(wanikaniApi.get_assignments_for_review())
+    }
+
 //    private fun unpackPosts_assignments(response: WanikaniApi.ListingData):  List<Int> {
     private fun unpackPosts_assignments(response: WanikaniApi.ListingData):  HashMap<Int,Int> {
         // XXX Write me.

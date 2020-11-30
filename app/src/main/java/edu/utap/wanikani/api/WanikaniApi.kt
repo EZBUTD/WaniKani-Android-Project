@@ -46,6 +46,10 @@ interface WanikaniApi {
     @GET("assignments?immediately_available_for_lessons") //this is to filter on available for lessons.
     suspend fun get_assignments(): ListingData
 
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("assignments?immediately_available_for_review") //this is to filter on available for lessons.
+    suspend fun get_assignments_for_review(): ListingData
+
 
     class ListingData(
         val data: List<WaniKaniChildrenResponse>

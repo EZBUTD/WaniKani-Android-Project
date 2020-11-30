@@ -19,6 +19,7 @@ class MainViewModel : ViewModel() {
     private val repo = Repository(wanikaniApi)
     private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
+    private val subject_ids_for_review=MutableLiveData<List<WanikaniAssignments>>()
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
@@ -31,6 +32,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
 //            wanikanisubject.postValue(repo.fetchVocab(1))//need to figure out how to link the subject ID to this postvalue when we want to look something up...1=ground, 11=nine, for example.
             subject_ids.postValue(repo.fetchAssignments())
+            subject_ids_for_review.postValue(repo.fetchAssignments_for_review())
             assignments_ids.postValue(repo.fetchAssignments_ids())
 //            assignments.postValue(repo.fetchAssignments())
 
@@ -78,6 +80,11 @@ class MainViewModel : ViewModel() {
     fun observeSubjects():LiveData<List<WanikaniAssignments>>{
         var temp=subject_ids
         return subject_ids
+    }
+
+    fun observeSubjects_for_review():LiveData<List<WanikaniAssignments>>{
+        var temp=subject_ids_for_review
+        return subject_ids_for_review
     }
 
     fun get_assignments_ids(){
