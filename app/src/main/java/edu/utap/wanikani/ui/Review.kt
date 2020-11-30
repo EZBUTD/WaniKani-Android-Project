@@ -62,7 +62,8 @@ class Review : Fragment() {
 
     private fun initMeaning(){
         var temp=subject_meanings_list
-        meaningTV.text = subject_meanings_list[counter].meanings[0].toString().split(",")[0].removePrefix("{meaning=") //dirty way to clean up the meanings
+        meaningTV.text="hidden during reviews"
+//        meaningTV.text = subject_meanings_list[counter].meanings[0].toString().split(",")[0].removePrefix("{meaning=") //dirty way to clean up the meanings
     }
 
     private fun initTabs(){
@@ -74,10 +75,11 @@ class Review : Fragment() {
         //set up subject info during init
 
 
-        tabTitleTV.text = radicalTabsTitles[0]
+//        tabTitleTV.text = radicalTabsTitles[0]
 //        textBlockTV.text = debug_nameMnemonic[0]
 //        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
-        textBlockTV.text= subject_meanings_list[counter].meaning_mnemonic
+//        textBlockTV.text= subject_meanings_list[counter].meaning_mnemonic
+        textBlockTV.text="start review when you are ready(min review length=2)"
 
 
         radTab1TV.setOnClickListener{
