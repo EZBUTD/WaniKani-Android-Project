@@ -60,10 +60,11 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private fun initLessonObserver() {
-        viewModel.observeAvailableReviewSubjectsId().observe(viewLifecycleOwner,
+        viewModel.observeAvailableLessonSubjectsId().observe(viewLifecycleOwner,
                 Observer {myLessonList->
                     if(myLessonList!= null) {
                         setLessonsTV(myLessonList.size)
+                        Log.d("XXXlesson size:", "$myLessonList")
                     } else {setLessonsTV(0)}
                 })
     }
