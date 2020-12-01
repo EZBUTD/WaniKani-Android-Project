@@ -116,7 +116,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         reviewBut.setOnClickListener{
 //            val reviewFragment = Review.newInstance(0)
-            //Use isReview=0 to indicate this is not a review
+            //Use isQuiz=0 to indicate this is not a quiz
             val reviewFragment=ReviewQuiz.newInstance(0)
             parentFragmentManager.beginTransaction()
                     .add(R.id.main_frame, reviewFragment)

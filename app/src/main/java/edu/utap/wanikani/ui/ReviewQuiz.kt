@@ -21,7 +21,7 @@ class ReviewQuiz : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
 
     //Is review tells whether to use the passed down subjects from lesson or fetch from the net
-    private var isReview : Int =0
+    private var isQuiz : Int =0
 
     private var currentIdx : Int =0
     private var tries : Int = 0
@@ -70,8 +70,13 @@ class ReviewQuiz : Fragment() {
                     var temp=assignment_id_key
                     viewModel.move_to_reviews(assignment_id_key)
                 }
-                parentFragmentManager.popBackStack()
-                parentFragmentManager.popBackStack()
+                //Pop back twice if coming from the lesson frag; pop back once if coming from the home frag
+                if(isQuiz==1) {
+                    parentFragmentManager.popBackStack()
+                    parentFragmentManager.popBackStack()
+                } else {
+                    parentFragmentManager.popBackStack()
+                }
             } else
                 nextQuestion()
 
@@ -124,9 +129,6 @@ class ReviewQuiz : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_review_quiz, container, false)
 
-        requireActivity().onBackPressedDispatcher.addCallback(this){
-            parentFragmentManager.popBackStack()
-        }
 
         return view
     }
@@ -135,10 +137,10 @@ class ReviewQuiz : Fragment() {
         if (this.arguments != null) {
             //Use isReview to tell whether this is coming from a lesson frag and just needs to get the subjects from the lesson
             // or if this is from home frag and we need to fetch data across the network
-            isReview = this.requireArguments().getInt(isReviewKey)
+            isQuiz = this.requireArguments().getInt(isQuizKey)
 
             //Use previous lesson's subjects
-            if (isReview==1) {
+            if (isQuiz==1) {
                 quiz_data = viewModel.get_quiz_data()
                 for (i in quiz_data) {
                     answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
@@ -151,6 +153,11 @@ class ReviewQuiz : Fragment() {
                     Log.d("XXXquizDone", "$i is set to false")
                 }
                 initCharacters()
+                //Pop back twice if coming from the lesson frag
+                requireActivity().onBackPressedDispatcher.addCallback(this){
+                    parentFragmentManager.popBackStack()
+                    parentFragmentManager.popBackStack()
+                }
             }
             //fetch the network for a review
             else {
@@ -170,6 +177,11 @@ class ReviewQuiz : Fragment() {
                             }
                         })
 
+                //Pop back once if coming from the home frag
+                requireActivity().onBackPressedDispatcher.addCallback(this){
+                    parentFragmentManager.popBackStack()
+                }
+
             }
         }
 
@@ -178,10 +190,10 @@ class ReviewQuiz : Fragment() {
     }
 
     companion object {
-        const val isReviewKey = "isReviewKey"
-        fun newInstance(isReview: Int) : ReviewQuiz {
+        const val isQuizKey = "isQuizKey"
+        fun newInstance(isQuiz: Int) : ReviewQuiz {
             val b = Bundle()
-            b.putInt(isReviewKey, isReview)
+            b.putInt(isQuizKey, isQuiz)
             val frag = ReviewQuiz()
             frag.arguments = b
             return frag

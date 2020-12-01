@@ -89,7 +89,7 @@ class Lesson : Fragment() {
 
         quizBut.setOnClickListener{
             viewModel.store_for_review(subject_list)
-            val quizFragment = ReviewQuiz.newInstance(isReview = 1)
+            val quizFragment = ReviewQuiz.newInstance(isQuiz = 1)
             parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frame, quizFragment)
                     .addToBackStack("backHome")
