@@ -61,7 +61,7 @@ class Review_quiz_mod : Fragment() {
         counter++
         viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
 //        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
-        if (responseET.text.toString().toLowerCase() == answers[currentIdx].toLowerCase()) {
+        if (responseET.text.toString().toLowerCase().trim() == answers[currentIdx].toLowerCase()) {
             answerLay.setBackgroundColor(Color.GREEN)
             responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true

@@ -23,10 +23,6 @@ interface WanikaniApi {
     //@GET("https://api.wanikani.com/v2/assignments.json")
     //suspend fun  getAssignments() : ListingResponse
 
-    //@Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
-    //@GET("https://api.wanikani.com/v2/assignments.json")
-    //suspend fun api_call(@Query("<param>") value: String) : WanikaniResponse
-
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects/?")
 //    @GET("subjects/{id}")
@@ -44,7 +40,7 @@ interface WanikaniApi {
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("assignments?immediately_available_for_lessons") //this is to filter on available for lessons.
-    suspend fun get_assignments(): ListingData
+    suspend fun get_assignments_for_lesson(): ListingData
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("assignments?immediately_available_for_review") //this is to filter on available for lessons.

@@ -223,7 +223,7 @@ class Review : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (this.arguments != null) {
-            myTypeId = this.requireArguments().getInt(typeIdKey)
+            myTypeId = this.requireArguments().getInt(isReview)
         }
         // This tells us how many tabs there are based on whether this lesson is type: Radicals, Kanji, Vocabulary
         when (myTypeId){
@@ -249,10 +249,10 @@ class Review : Fragment() {
     }
 
     companion object {
-        const val typeIdKey = "typeIdKey"
-        fun newInstance(typeId: Int) : Review {
+        const val isReview = "reviewOrQuizKey"
+        fun newInstance(reviewing: Int) : Review {
             val b = Bundle()
-            b.putInt(typeIdKey, typeId)
+            b.putInt(isReview, reviewing)
             val frag = Review()
             frag.arguments = b
             return frag

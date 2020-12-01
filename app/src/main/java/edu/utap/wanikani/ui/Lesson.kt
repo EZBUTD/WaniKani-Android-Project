@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_lesson.*
 
 class Lesson : Fragment() {
 
+    private val MAX_LESSON_COUNT = 5
+
     private val viewModel: MainViewModel by activityViewModels()
 
     //Use myTypeId to tell if we want to display stuff for 0: radical, 1: kanji, 2: vocabulary
@@ -29,9 +31,10 @@ class Lesson : Fragment() {
 
     private var currentIdx : Int =0
     //fragment tabs for the radicals section
-    private var tabCount : Int = 0
+    private var tabCount : Int = 1
     private var currentTabIdx : Int = 0
-    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Examples")
+    //private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Examples")          //This is the correct list, and we'll need to use this list once we are able to get the examples
+    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic")
 
     //Some hardcoded values just to see what my layout looks like.
 //    private val debug_characters : List<String> = listOf("一", "ハ")
@@ -40,13 +43,10 @@ class Lesson : Fragment() {
 //    private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
 
     private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
-    private var counter=0
-//    private val subjects=viewModel.observeSubjects()
 
-    //I think you would need a lateinit var like this? I'm not sure
-     //private lateinit var mySubjects : List<WanikaniSubjects>
+    private val subject_list = mutableListOf<WanikaniSubjects>()
+    private val subject_id_list = mutableListOf<Int>()
 
-    //private lateinit var lessonDone : MutableList<Boolean>          //Use this to check that User has gone through each tab in the lesson
     private var lessonDone : MutableList<Boolean> = arrayListOf()          //Use this to check that User has gone through each tab in the lesson
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,14 +55,11 @@ class Lesson : Fragment() {
     }
 
     private fun initCharacters(){
-        //charTV.text = debug_characters[0]
-        var temp=subject_meanings_list
-        charTV.text = subject_meanings_list[counter].cha
+        charTV.text = subject_list[currentIdx].cha
     }
 
     private fun initMeaning(){
-        var temp=subject_meanings_list
-        meaningTV.text = subject_meanings_list[counter].meanings[0].toString().split(",")[0].removePrefix("{meaning=") //dirty way to clean up the meanings
+        meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=") //dirty way to clean up the meanings
     }
 
     private fun initTabs(){
@@ -71,13 +68,9 @@ class Lesson : Fragment() {
         kanjiTab3TV.visibility = View.INVISIBLE
         kanjiTab4TV.visibility = View.INVISIBLE
 
-            //set up subject info during init
-
 
         tabTitleTV.text = radicalTabsTitles[0]
-//        textBlockTV.text = debug_nameMnemonic[0]
-//        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic
-        textBlockTV.text= subject_meanings_list[counter].meaning_mnemonic
+        textBlockTV.text= subject_list[currentIdx].meaning_mnemonic
 
 
         radTab1TV.setOnClickListener{
@@ -122,7 +115,7 @@ class Lesson : Fragment() {
         tabTitleTV.text = radicalTabsTitles[tabIdx]
 
         if (tabIdx == 0){
-//            textBlockTV.text = debug_nameMnemonic[currentIdx]
+             textBlockTV.text = subject_list[currentIdx].meaning_mnemonic
         } else {
 //            textBlockTV.text = debug_examples[currentIdx]
         }
@@ -134,8 +127,8 @@ class Lesson : Fragment() {
             currentTabIdx=0
             openTab(currentTabIdx)
 
-//            charTV.text = debug_characters[currentIdx]
-//            meaningTV.text = debug_meaning[currentIdx]
+            charTV.text = subject_list[currentIdx].cha
+            meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
             lessonDone[currentIdx*tabCount]=true
         }
 
@@ -144,18 +137,15 @@ class Lesson : Fragment() {
                 incrementIdx()
                 currentTabIdx=0
                 openTab(currentTabIdx)
-            } else {
-                currentTabIdx++
-                openTab(currentTabIdx)
             }
-            counter++
+            //else {
+            //    currentTabIdx++
+            //    openTab(currentTabIdx)
+            //}
 
-            val subjects=viewModel.observeSubjects()
-            viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
+            charTV.text = subject_list[currentIdx].cha
+            meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
 
-
-//            charTV.text = debug_characters[currentIdx]
-//            meaningTV.text = debug_meaning[currentIdx]
             val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
             lessonDone[lessonDoneIdx]=true
             Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
@@ -165,52 +155,55 @@ class Lesson : Fragment() {
 
     private fun decrementIdx() {
         if( currentIdx == 0)
-//            currentIdx=
-//            currentIdx = debug_characters.size-1
-
+            currentIdx = subject_list.size-1
         else
             currentIdx--
     }
 
     private fun incrementIdx() {
-//        if( currentIdx == debug_characters.size-1)
-//            currentIdx = 0
-//        else
-//            currentIdx++
+        if( currentIdx == subject_list.size-1)
+            currentIdx = 0
+        else
+            currentIdx++
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_lesson, container, false)
 
-        val subjects=viewModel.observeSubjects()
-        val subject_1= subjects.value?.get(0)?.sub_id
-        val subjects_length=subjects.value?.size
 
-        viewModel.launch_subject_data(subjects.value!!.get(counter).sub_id)
+        viewModel.netSubjects()
 
-
-        viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+        viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
                 Observer {
-                    if (it != null) {
-                        val meaning_mnemonic = it.meaning_mnemonic
-                        Log.d("XXXObserver", "My meaning_mnemonic character is ${meaning_mnemonic} size is ${subject_meanings_list.size}")
-                        var temp=subject_meanings_list
-                        subject_meanings_list.add(it)
+                    if (it!= null){
+                        var type = "Radical"
+                        var ctr = 0
+                        for (i in it){
+                            //Log.d("XXXwessubjects", "subject char is: ${i.cha}")
+                            subject_list.add(i)
+                            subject_id_list.add(i.subject_id)
 
-                        for (i in 0 until tabCount) {
-                            lessonDone.add(false)
-                            Log.d("XXXlessonDone", "$i is set to false")
+                            //XXX When we can get the name examples will need to modify the logic below:
+                            //when (type){
+                            //    "Radical"->tabCount=2
+                            //    "Kanji"->tabCount=4
+                            //    "Vocabulary"->tabCount=3
+                            //    else->tabCount=0
+                            //}
+                            //for (i in 0 until tabCount) {
+                                lessonDone.add(false)
+                            //}
+                            ctr++
+                            if(ctr==MAX_LESSON_COUNT)
+                                break
                         }
-                        lessonDone[0] = true
                         initTabs()
                         initCharacters()
                         initMeaning()
-
-                    } else{
-                        Log.d("XXXFrag", "subject is null?")
                     }
                 })
+
 
         requireActivity().onBackPressedDispatcher.addCallback(this){
             parentFragmentManager.popBackStack()
@@ -224,12 +217,12 @@ class Lesson : Fragment() {
             myTypeId = this.requireArguments().getInt(typeIdKey)
         }
         // This tells us how many tabs there are based on whether this lesson is type: Radicals, Kanji, Vocabulary
-        when (myTypeId){
-            0->tabCount=2
-            1->tabCount=4
-            2->tabCount=3
-            else->tabCount=0
-        }
+        //when (myTypeId){
+        //    0->tabCount=2
+        //    1->tabCount=4
+        //    2->tabCount=3
+        //    else->tabCount=0
+        //}
 
         //I used a 2d array that's been flattened to 1d
         //for (i in 0 until debug_characters.size * tabCount) {

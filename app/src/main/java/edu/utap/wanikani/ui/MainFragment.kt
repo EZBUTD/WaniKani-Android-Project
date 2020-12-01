@@ -104,7 +104,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             //.removeSurrounding("[", "]")
             viewModel.netSubjects()
 
-            viewModel.observeAvailableSubjects().observe(viewLifecycleOwner,
+            viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
                     Observer {
                         if (it!= null){
                             for (i in it){

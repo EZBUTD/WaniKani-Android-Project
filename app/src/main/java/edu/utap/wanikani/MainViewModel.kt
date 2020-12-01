@@ -21,62 +21,42 @@ class MainViewModel : ViewModel() {
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
-    private var available_subject_ids = MutableLiveData<List<Int>>().apply {
+    private var available_subject_ids_lessons = MutableLiveData<List<Int>>().apply {
         value= listOf(0)
     }
-          /*
-    private var available_subject_ids_string = MutableLiveData<String>().apply{
-        value="0"
-    }
-
-           */
-    private var available_subjects = MutableLiveData<List<WanikaniSubjects>>()
+    private var available_lesson_subjects = MutableLiveData<List<WanikaniSubjects>>()
 
     init {
         netRefresh()
-        netIds()
+        netIdsLessons()
     }
 
-    //This function sets the list of currently available IDs
-    fun netIds (){
+    //Updates the list of subject IDs that are currently available from assignments
+    fun netIdsLessons (){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            available_subject_ids.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments()))
-            //available_subject_ids_string.postValue(repo.get_sub_ids_from_available_assignments_String(repo.get_available_assignments()))
+            available_subject_ids_lessons.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments_for_lesson()))
         }
     }
 
+    //Updates list of lesson subjects that are currently available
     fun netSubjects() {
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            //val mySubjIds = available_subject_ids_string.value.toString()
-            val mySubjIds = available_subject_ids.value?.joinToString(",")
-            available_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
+            val mySubjIds = available_subject_ids_lessons.value?.joinToString(",")
+            available_lesson_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
         }
     }
 
-    fun observeAvailableSubjects() : MutableLiveData<List<WanikaniSubjects>>{
-        return available_subjects
+    fun observeAvailableLessonSubjects() : MutableLiveData<List<WanikaniSubjects>>{
+        return available_lesson_subjects
     }
-
-/*
-    private var availableSubjects = MediatorLiveData<WanikaniSubjects>().apply {
-        addSource(available_subject_ids){
-            val stringList = it.joinToString(separator = ",")
-           repo.get_subjects_from_available_ids(stringList)
-        }
-
-    }
-
- */
 
     fun netRefresh() {
-        // XXX Write me.  This is where the network request is initiated.
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
 //            wanikanisubject.postValue(repo.fetchVocab(1))//need to figure out how to link the subject ID to this postvalue when we want to look something up...1=ground, 11=nine, for example.
             subject_ids.postValue(repo.fetchAssignments())
             subject_ids_for_review.postValue(repo.fetchAssignments_for_review())
             assignments_ids.postValue(repo.fetchAssignments_ids())
 //            assignments.postValue(repo.fetchAssignments())
-
         }
     }
 
