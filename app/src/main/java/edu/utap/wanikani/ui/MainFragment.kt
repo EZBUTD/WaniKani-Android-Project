@@ -71,8 +71,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     private fun initNameObserver() {
         viewModel.observeUsername().observe(viewLifecycleOwner,
-            Observer {name->
-                setUserName(name)
+            Observer {user->
+                setUserName(user.username)
             })
     }
 
@@ -122,6 +122,16 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                     .add(R.id.main_frame, reviewFragment)
                     .addToBackStack("backHome")
                     .commit()
+        }
+
+        accountBut.setOnClickListener{
+//            val reviewFragment = Review.newInstance(0)
+            //Use isQuiz=0 to indicate this is not a quiz
+            val accountFragment=AccountSettings.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.main_frame, accountFragment)
+                .addToBackStack("backHome")
+                .commit()
         }
 
         testBut.setOnClickListener{

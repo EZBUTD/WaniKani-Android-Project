@@ -2,10 +2,7 @@ package edu.utap.wanikani
 
 import android.util.Log
 import androidx.lifecycle.*
-import edu.utap.wanikani.api.Repository
-import edu.utap.wanikani.api.WanikaniApi
-import edu.utap.wanikani.api.WanikaniAssignments
-import edu.utap.wanikani.api.WanikaniSubjects
+import edu.utap.wanikani.api.*
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,12 +19,13 @@ class MainViewModel : ViewModel() {
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
-    private var userName = MutableLiveData<String>()
+    private var userName = MutableLiveData<WanikaniUser>()
 
     private var available_subject_ids_lessons = MutableLiveData<List<Int>>()
     private var available_subject_ids_review = MutableLiveData<List<Int>>()
     private var available_lesson_subjects = MutableLiveData<List<WanikaniSubjects>>()
     private var available_review_subjects = MutableLiveData<List<WanikaniSubjects>>()
+    private val pending_assignments=MutableLiveData<List<WanikaniAssignments>>()
 
     init {
         netUser()
@@ -42,7 +40,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun observeUsername(): MutableLiveData<String>{
+    fun observeUsername(): MutableLiveData<WanikaniUser>{
         return userName
     }
 
@@ -75,6 +73,17 @@ class MainViewModel : ViewModel() {
             val mySubjIds = available_subject_ids_review.value?.joinToString(",")
             available_review_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
         }
+    }
+
+    fun netPendingAssignments(){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            pending_assignments.postValue(repo.fetchFutureAssignments())
+        }
+    }
+
+    fun observePendingAssignments() : MutableLiveData<List<WanikaniAssignments>>{
+        return pending_assignments
     }
 
     fun observeAvailableLessonSubjects() : MutableLiveData<List<WanikaniSubjects>>{

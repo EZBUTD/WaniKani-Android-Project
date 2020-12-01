@@ -49,6 +49,10 @@ interface WanikaniApi {
     suspend fun get_assignments_for_review(): ListingData
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("assignments") //Checks when the next available assignment is
+    suspend fun get_assignments_available_after(@Query("available_after") time: String): ListingData
+
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects?") //this is to filter on available for lessons.
     suspend fun get_subjects(@Query("ids", encoded = true) ids: String): ListingData
 

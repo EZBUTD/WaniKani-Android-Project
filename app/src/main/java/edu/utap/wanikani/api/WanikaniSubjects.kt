@@ -25,10 +25,14 @@ data class WanikaniAssignments  (
     @SerializedName("meanings")
     val meanings : MutableList<Any>,
     @SerializedName("reading_mnemonic")
-    val reading_mnemonic : String
+    val reading_mnemonic : String,
+    @SerializedName("available_at")
+    val available_at : String
 )
 
 data class WanikaniUser (
     @SerializedName("username")
-    var username:String
+    var username:String,
+    @SerializedName("levels")
+    var levels:String
 )

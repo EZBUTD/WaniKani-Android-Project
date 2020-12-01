@@ -2,6 +2,8 @@ package edu.utap.wanikani.api
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class Repository(private val wanikaniApi: WanikaniApi) {
@@ -31,6 +33,15 @@ class Repository(private val wanikaniApi: WanikaniApi) {
 
     suspend fun fetchAssignments() : List<WanikaniAssignments> {
         return unpackPosts(wanikaniApi.get_assignments_for_lesson())
+    }
+
+    suspend fun fetchFutureAssignments() : List<WanikaniAssignments> {
+        val currentTime = LocalDateTime.now()
+
+        val formatter = DateTimeFormatter.ISO_INSTANT
+        val formattedCurrentTime = currentTime.format(formatter)
+        Log.d("XXXcurrenttime", "Current time is: $currentTime formatted time is $formattedCurrentTime")
+        return unpackPosts(wanikaniApi.get_assignments_available_after(formattedCurrentTime.toString()))
     }
 
     suspend fun fetchAssignments_for_review() : List<WanikaniAssignments> {
@@ -80,8 +91,8 @@ class Repository(private val wanikaniApi: WanikaniApi) {
         return unpackPosts_assignments(wanikaniApi.get_assignments_for_lesson())
     }
 
-    suspend fun fetchUser() : String {
-        return wanikaniApi.getUser().data.username
+    suspend fun fetchUser() : WanikaniUser {
+        return wanikaniApi.getUser().data
     }
 
     private fun unpackSubjects(response: WanikaniApi.WanikaniSubjectsResponse) : List<WanikaniSubjects>{
