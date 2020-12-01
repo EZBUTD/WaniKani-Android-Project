@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
 
     private val wanikaniApi = WanikaniApi.create()
     private val repo = Repository(wanikaniApi)
+
     private var wanikanisubject = MutableLiveData<WanikaniSubjects>()
     private val subject_ids=MutableLiveData<List<WanikaniAssignments>>()
     private val subject_Data=MutableLiveData<List<WanikaniAssignments>>()
@@ -21,33 +22,75 @@ class MainViewModel : ViewModel() {
     private val assignments_ids=MutableLiveData<HashMap<Int,Int>>()
     private var subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
-    private var available_subject_ids_lessons = MutableLiveData<List<Int>>().apply {
-        value= listOf(0)
-    }
+    private var userName = MutableLiveData<String>()
+
+    private var available_subject_ids_lessons = MutableLiveData<List<Int>>()
+    private var available_subject_ids_review = MutableLiveData<List<Int>>()
     private var available_lesson_subjects = MutableLiveData<List<WanikaniSubjects>>()
+    private var available_review_subjects = MutableLiveData<List<WanikaniSubjects>>()
 
     init {
+        netUser()
         netRefresh()
         netIdsLessons()
+        netIdsReview()
     }
 
-    //Updates the list of subject IDs that are currently available from assignments
+    fun netUser (){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            userName.postValue(repo.fetchUser())
+        }
+    }
+
+    fun observeUsername(): MutableLiveData<String>{
+        return userName
+    }
+
+    //Updates the list of subject IDs that are currently available for lesson
     fun netIdsLessons (){
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
             available_subject_ids_lessons.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments_for_lesson()))
+            assignments_ids.postValue(repo.fetchAssignments_ids())
+        }
+    }
+
+    //Updates the list of subject IDs that are currently available for review
+    fun netIdsReview (){
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            available_subject_ids_review.postValue(repo.get_sub_ids_from_available_assignments(repo.get_available_assignments_for_review()))
         }
     }
 
     //Updates list of lesson subjects that are currently available
-    fun netSubjects() {
+    fun netSubjectsLesson() {
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
             val mySubjIds = available_subject_ids_lessons.value?.joinToString(",")
             available_lesson_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
         }
     }
 
+    //Updates list of review subjects that are currently available
+    fun netSubjectsReview() {
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            val mySubjIds = available_subject_ids_review.value?.joinToString(",")
+            available_review_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
+        }
+    }
+
     fun observeAvailableLessonSubjects() : MutableLiveData<List<WanikaniSubjects>>{
         return available_lesson_subjects
+    }
+
+    fun observeAvailableReviewSubjects() : MutableLiveData<List<WanikaniSubjects>>{
+        return available_review_subjects
+    }
+
+    fun observeAvailableLessonSubjectsId() : MutableLiveData<List<Int>>{
+        return available_subject_ids_lessons
+    }
+
+    fun observeAvailableReviewSubjectsId() : MutableLiveData<List<Int>>{
+        return available_subject_ids_review
     }
 
     fun netRefresh() {
@@ -85,7 +128,6 @@ class MainViewModel : ViewModel() {
 
     fun move_to_reviews(id:Int)
     {
-//        try{
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
             repo.start_assign(id)//this should be assignment id
@@ -133,12 +175,11 @@ class MainViewModel : ViewModel() {
         return assignments_ids
     }
 
-    fun store_for_lesson(data: MutableList<WanikaniSubjects>){
+    fun store_for_review(data: MutableList<WanikaniSubjects>){
         subject_meanings_list=data
     }
 
-    fun observe_quiz_data():MutableList<WanikaniSubjects>{
+    fun get_quiz_data():MutableList<WanikaniSubjects>{
         return subject_meanings_list
     }
-
 }

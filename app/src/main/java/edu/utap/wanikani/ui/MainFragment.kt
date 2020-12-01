@@ -30,9 +30,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MainFragment : Fragment(R.layout.main_fragment) {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-
     companion object {
         fun newInstance(): MainFragment {
             return MainFragment()
@@ -41,14 +38,42 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     private val viewModel: MainViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-        }
-
+    private fun setUserName(myName :String){
+        nameTV.text = myName
     }
 
+    private fun setReviewsTV(n_reviews : Int){
+        myReviewTV.text = n_reviews.toString() + " reviews available"
+    }
+
+    private fun setLessonsTV(n_lessons : Int){
+        myLessonsTV.text = n_lessons.toString() + " lessons available"
+    }
+
+    private fun initReviewObserver() {
+        viewModel.observeAvailableReviewSubjectsId().observe(viewLifecycleOwner,
+                Observer {myReviewList->
+                    if(myReviewList != null) {
+                        setReviewsTV(myReviewList.size)
+                    } else  {setReviewsTV(0)}
+                })
+    }
+
+    private fun initLessonObserver() {
+        viewModel.observeAvailableReviewSubjectsId().observe(viewLifecycleOwner,
+                Observer {myLessonList->
+                    if(myLessonList!= null) {
+                        setLessonsTV(myLessonList.size)
+                    } else {setLessonsTV(0)}
+                })
+    }
+
+    private fun initNameObserver() {
+        viewModel.observeUsername().observe(viewLifecycleOwner,
+            Observer {name->
+                setUserName(name)
+            })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,12 +96,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         )
 
         //val testButton = (activity as AppCompatActivity).findViewById<TextView>(R.id.testBut)
-
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        initNameObserver()
+        initReviewObserver()
+        initLessonObserver()
 
         startBut.setOnClickListener{
             val lessonFragment = Lesson.newInstance(0)
@@ -88,7 +115,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         reviewBut.setOnClickListener{
 //            val reviewFragment = Review.newInstance(0)
-            val reviewFragment=Review_quiz_mod.newInstance(0)
+            //Use isReview=0 to indicate this is not a review
+            val reviewFragment=ReviewQuiz.newInstance(0)
             parentFragmentManager.beginTransaction()
                     .add(R.id.main_frame, reviewFragment)
                     .addToBackStack("backHome")
@@ -102,7 +130,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
             //.removeSurrounding("[", "]")
-            viewModel.netSubjects()
+            viewModel.netSubjectsLesson()
 
             viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
                     Observer {
@@ -112,11 +140,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                             }
                         }
                     })
-
-
-
-
-
             /*
             val data= "1,2,3"
             val data2 = listOf(1,2,3)

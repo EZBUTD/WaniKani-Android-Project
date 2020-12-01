@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import edu.utap.wanikani.api.WanikaniSubjects
@@ -19,8 +20,8 @@ class ReviewQuiz : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
-    //Use myTypeId to tell if we want to display stuff for 0: radical, 1: kanji, 2: vocabulary
-    private var myTypeId : Int =0
+    //Is review tells whether to use the passed down subjects from lesson or fetch from the net
+    private var isReview : Int =0
 
     private var currentIdx : Int =0
     private var tries : Int = 0
@@ -34,12 +35,9 @@ class ReviewQuiz : Fragment() {
     private var answers= mutableListOf<String>()
     private var assignments_ids= HashMap<Int,Int>()
 
-
-    //private lateinit var questionDone : MutableList<Boolean>
     private var questionDone : MutableList<Boolean> = arrayListOf()
 
     private fun initCharacters(){
-//        charTV.text = debug_characters[0]
         charTV.text=characters[0]
 
     }
@@ -56,7 +54,7 @@ class ReviewQuiz : Fragment() {
 
     private fun checkAnswer() {
 //        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
-        if (responseET.text.toString().toLowerCase() == answers[currentIdx].toLowerCase()) {
+        if (responseET.text.toString().toLowerCase().trim() == answers[currentIdx].toLowerCase()) {
             answerLay.setBackgroundColor(Color.GREEN)
             responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true
@@ -130,40 +128,60 @@ class ReviewQuiz : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (this.arguments != null) {
-            myTypeId = this.requireArguments().getInt(Lesson.typeIdKey)
-        }
-        quiz_data=viewModel.observe_quiz_data()
-        for(i in quiz_data){
-            answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
-            characters.add(i.cha)
+            //Use isReview to tell whether this is coming from a lesson frag and just needs to get the subjects from the lesson
+            // or if this is from home frag and we need to fetch data across the network
+            isReview = this.requireArguments().getInt(isReviewKey)
+
+            //Use previous lesson's subjects
+            if (isReview==1) {
+                quiz_data = viewModel.get_quiz_data()
+                for (i in quiz_data) {
+                    answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
+                    characters.add(i.cha)
+                }
+                assignments_ids= viewModel.observeAssignment_ids().value!!
+
+                for (i in answers.indices){
+                    questionDone.add(false)
+                    Log.d("XXXquizDone", "$i is set to false")
+                }
+                initCharacters()
+            }
+            //fetch the network for a review
+            else {
+                viewModel.netSubjectsReview()
+
+                viewModel.observeAvailableReviewSubjects().observe(viewLifecycleOwner,
+                        Observer {
+                            if (it!= null){
+                                for (i in it){
+                                    //Log.d("XXXwessubjects", "subject char is: ${i.cha}")
+                                    characters.add(i.cha)
+                                    answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
+
+                                    questionDone.add(false)
+                                }
+                                initCharacters()
+                            }
+                        })
+
+            }
         }
 
-        assignments_ids= viewModel.observeAssignment_ids().value!!
-
-
-        Log.d("XXXtypeid", "$myTypeId")
-//        for (i in debug_answers.indices){
-        for (i in answers.indices){
-            //questionDone[i] = false
-            questionDone.add(false)
-            Log.d("XXXquizDone", "$i is set to false")
-        }
-        initCharacters()
         initTitle()
         initAnswerCheck()
     }
 
     companion object {
-        const val typeIdKey = "typeIdKey"
-        fun newInstance(typeId: Int) : ReviewQuiz {
+        const val isReviewKey = "isReviewKey"
+        fun newInstance(isReview: Int) : ReviewQuiz {
             val b = Bundle()
-            b.putInt(typeIdKey, typeId)
+            b.putInt(isReviewKey, isReview)
             val frag = ReviewQuiz()
             frag.arguments = b
             return frag

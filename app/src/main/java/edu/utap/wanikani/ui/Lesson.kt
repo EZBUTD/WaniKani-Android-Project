@@ -51,7 +51,6 @@ class Lesson : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     private fun initCharacters(){
@@ -89,8 +88,8 @@ class Lesson : Fragment() {
         quizBut.isEnabled=false
 
         quizBut.setOnClickListener{
-            viewModel.store_for_lesson(subject_meanings_list)
-            val quizFragment = ReviewQuiz.newInstance(myTypeId)
+            viewModel.store_for_review(subject_list)
+            val quizFragment = ReviewQuiz.newInstance(isReview = 1)
             parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frame, quizFragment)
                     .addToBackStack("backHome")
@@ -171,8 +170,7 @@ class Lesson : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_lesson, container, false)
 
-
-        viewModel.netSubjects()
+        viewModel.netSubjectsLesson()
 
         viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
                 Observer {
@@ -198,6 +196,7 @@ class Lesson : Fragment() {
                             if(ctr==MAX_LESSON_COUNT)
                                 break
                         }
+                        lessonDone[0]=true
                         initTabs()
                         initCharacters()
                         initMeaning()
@@ -231,7 +230,6 @@ class Lesson : Fragment() {
         //}
         //lessonDone[0] = true
 
-        Log.d("XXXtypeid", "$myTypeId")
         //initCharacters()
         //initMeaning()
         //initTabs()

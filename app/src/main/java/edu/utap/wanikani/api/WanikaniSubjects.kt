@@ -27,3 +27,8 @@ data class WanikaniAssignments  (
     @SerializedName("reading_mnemonic")
     val reading_mnemonic : String
 )
+
+data class WanikaniUser (
+    @SerializedName("username")
+    var username:String
+)

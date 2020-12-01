@@ -58,6 +58,10 @@ class Repository(private val wanikaniApi: WanikaniApi) {
         return wanikaniApi.get_assignments_for_lesson()
     }
 
+    suspend fun get_available_assignments_for_review() : WanikaniApi.ListingData {
+        return wanikaniApi.get_assignments_for_review()
+    }
+
     fun get_sub_ids_from_available_assignments(response: WanikaniApi.ListingData):  List<Int> {
         var listSubjectIds= mutableListOf<Int>()
         for(i in response.data){
@@ -74,6 +78,10 @@ class Repository(private val wanikaniApi: WanikaniApi) {
 
     suspend fun fetchAssignments_ids() : HashMap<Int,Int> {
         return unpackPosts_assignments(wanikaniApi.get_assignments_for_lesson())
+    }
+
+    suspend fun fetchUser() : String {
+        return wanikaniApi.getUser().data.username
     }
 
     private fun unpackSubjects(response: WanikaniApi.WanikaniSubjectsResponse) : List<WanikaniSubjects>{

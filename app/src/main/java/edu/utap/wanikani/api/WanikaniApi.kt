@@ -25,9 +25,11 @@ interface WanikaniApi {
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
     @GET("subjects/?")
-//    @GET("subjects/{id}")
     suspend fun api_call(@Query("level") level: Int) : List<WanikaniResponse>
 
+    @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
+    @GET("user")
+    suspend fun getUser() : WanikaniUserResponse
 
     @Headers("Authorization: Bearer ffef2121-13e6-409a-bd8d-78437dc4338e")
 //    @GET("subjects/1?types=radical,kanji")
@@ -63,6 +65,8 @@ interface WanikaniApi {
     data class WanikaniSubjectsResponse(val data:List<WanikaniResponse>)
 
     data class WanikaniResponse(val data: WanikaniSubjects, val id:Int)
+
+    data class WanikaniUserResponse(val data: WanikaniUser)
 
     class SpannableDeserializer : JsonDeserializer<SpannableString> {
         // @Throws(JsonParseException::class)

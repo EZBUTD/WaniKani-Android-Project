@@ -190,10 +190,10 @@ class Review_quiz_mod : Fragment() {
     }
 
     companion object {
-        const val typeIdKey = "typeIdKey"
-        fun newInstance(typeId: Int) : Review_quiz_mod {
+        const val reviewSubjectsKey = "reviewSubjects"
+        fun newInstance(isReview: Int) : Review_quiz_mod {
             val b = Bundle()
-            b.putInt(typeIdKey, typeId)
+            b.putInt(reviewSubjectsKey, isReview)
             val frag = Review_quiz_mod()
             frag.arguments = b
             return frag
