@@ -87,4 +87,5 @@ object Glide {
                 .into(imageView)
         }
     }
+
 }

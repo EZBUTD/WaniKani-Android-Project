@@ -115,6 +115,7 @@ class ReviewQuiz : Fragment() {
         answerLay.setBackgroundColor(Color.WHITE)
 //        charTV.text = debug_characters[currentIdx]
         if(characters[currentIdx].contains("https:")){
+
             var url=characters[currentIdx]
             Glide.glideFetch(url, url, charImageTV)
             charTV.text="" //set textview to null and need to load image view somehow
@@ -162,7 +163,13 @@ class ReviewQuiz : Fragment() {
                     }
                     else{
                         //need to fetch url image here...
-                        characters.add(i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\""))
+                        var counter=0
+                        var char_temp=i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+                        while(char_temp.contains("svg")){
+                            counter++
+                            char_temp=i.character_image[counter].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+                        }
+                        characters.add(char_temp)
                     }
                     var temp=characters
                 }
@@ -194,7 +201,13 @@ class ReviewQuiz : Fragment() {
                                     }
                                     else{
                                         //need to fetch url image here...
-                                        characters.add(i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\""))
+                                        var counter=0
+                                        var char_temp=i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+                                        while(char_temp.contains("svg")){
+                                            counter++
+                                            char_temp=i.character_image[counter].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+                                        }
+                                        characters.add(char_temp)
                                     }
                                     var temp=characters
                                     answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
