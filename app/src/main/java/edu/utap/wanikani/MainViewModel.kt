@@ -71,7 +71,7 @@ class MainViewModel : ViewModel() {
     fun netSubjectsReview() {
         viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO) {
             val mySubjIds = available_subject_ids_review.value?.joinToString(",")
-            Log.d("XXXMainviewmodel", "my review subject ids are: ${mySubjIds}")
+            Log.d("XXXMainviewmodel_net", "Fetching review subjects using ${mySubjIds}")
             available_review_subjects.postValue(mySubjIds?.let { repo.get_subjects_from_available_ids(it) })
             assignments_ids.postValue(repo.fetchAssignments_ids_review())
         }
@@ -101,7 +101,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun observeAvailableReviewSubjectsId() : MutableLiveData<List<Int>>{
-        Log.d("XXXMainviewmodel", "my review subject ids are: ${available_subject_ids_review}")
+        Log.d("XXXMainviewmodel_observe", "my review subject ids are: ${available_subject_ids_review}")
         return available_subject_ids_review
     }
 

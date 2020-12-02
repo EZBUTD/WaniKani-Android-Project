@@ -226,11 +226,17 @@ class ReviewQuiz : Fragment() {
             }
             //fetch the network for a review
             else {
+                Log.d("XXXReview", "Start of review frag")
                 viewModel.netSubjectsReview()
 
                 viewModel.observeAvailableReviewSubjects().observe(viewLifecycleOwner,
                         Observer {
                             if (it!= null){
+                                characters = mutableListOf()
+                                answers = mutableListOf()
+                                questionDone = mutableListOf()
+
+                                Log.d("XXXReview", "list is size ${it.size}")
                                 for (i in it){
                                    Log.d("XXXReview", "Adding subject id: ${i.subject_id}")
 //                                    characters.add(i.cha)
