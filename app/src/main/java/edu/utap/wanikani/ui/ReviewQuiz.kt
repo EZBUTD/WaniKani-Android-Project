@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
+import edu.utap.wanikani.api.WanikaniApi
 import edu.utap.wanikani.api.WanikaniSubjects
 import edu.utap.wanikani.glide.Glide
 import kotlinx.android.synthetic.main.fragment_review_quiz.*
@@ -66,18 +67,39 @@ class ReviewQuiz : Fragment() {
 
             if (lessonFinished()){
                 //submit put requests to mark items as succesfully completed and move into review queue
-                for(item in quiz_data){
-                    var temp2=assignments_ids
-                    var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
-                    //check if key actually is right
-                    var temp=assignment_id_key
-                    viewModel.move_to_reviews(assignment_id_key)
-                }
+//                for(item in quiz_data){
+//                    var temp2=assignments_ids
+//                    var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
+//                    //check if key actually is right
+//                    var temp=assignment_id_key
+//                    viewModel.move_to_reviews(assignment_id_key)
+//                }
                 //Pop back twice if coming from the lesson frag; pop back once if coming from the home frag
                 if(isQuiz==1) {
+                    for(item in quiz_data){
+                        var temp2=assignments_ids
+                        var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
+                        //check if key actually is right
+                        var temp=assignment_id_key
+                        viewModel.move_to_reviews(assignment_id_key)
+                    }
                     parentFragmentManager.popBackStack()
                     parentFragmentManager.popBackStack()
                 } else {
+                    quiz_data= viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
+                    for(item in quiz_data){
+                        assignments_ids= viewModel.observeAssignment_ids().value!!
+                        var temp2=assignments_ids
+                        var assignment_id_key:Int?=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
+                        if(assignment_id_key==null){
+                            //somethig went wrong
+                        }else{
+                            var temp=assignment_id_key
+                            viewModel.create_review(WanikaniApi.NestedJSON(WanikaniApi.NestedJSON_single(assignment_id = assignment_id_key.toString(),incorrect_meaning_answers = "0",incorrect_reading_answers = "0")))
+                        }
+                        //check if key actually is right
+
+                    }
                     parentFragmentManager.popBackStack()
                 }
             } else
@@ -217,6 +239,7 @@ class ReviewQuiz : Fragment() {
                                 initCharacters()
                             }
                         })
+
 
                 //Pop back once if coming from the home frag
                 requireActivity().onBackPressedDispatcher.addCallback(this){
