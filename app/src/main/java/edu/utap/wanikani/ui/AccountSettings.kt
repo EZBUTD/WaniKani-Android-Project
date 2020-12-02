@@ -1,6 +1,7 @@
 package edu.utap.wanikani.ui
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import kotlinx.android.synthetic.main.fragment_account_settings.*
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -49,7 +51,7 @@ class AccountSettings : Fragment() {
         viewModel.observeUsername().observe(viewLifecycleOwner,
             Observer {user->
                 setUserName(user.username)
-                setLevels(user.levels)
+                setLevels(user.level)
             })
 
         viewModel.observePendingAssignments().observe(viewLifecycleOwner,
@@ -61,12 +63,17 @@ class AccountSettings : Fragment() {
                     } else {
                         var firstAssignmentTime :LocalDateTime = LocalDateTime.now()
                         val currentTime = LocalDateTime.now()
-                        val formatter = DateTimeFormatter.ISO_INSTANT
-                        val formattedCurrentTime = currentTime.format(formatter)
+                        setTimeRemaining("")
+                        //val formatter = DateTimeFormatter.ISO_INSTANT
+                        //val formattedCurrentTime = currentTime.format(formatter)
 
                         var ctr =0
                         for (assignment in myAssignmentList) {
-                            val timeAvailable = LocalDateTime.parse(assignment.available_at, DateTimeFormatter.ISO_INSTANT)
+                            //val timeAvailable = LocalDateTime.parse(assignment.available_at, DateTimeFormatter.ISO_INSTANT)
+                            var dateString = assignment.available_at
+                            dateString = dateString.substring(0, dateString.lastIndexOf('.'))
+                            val timeAvailable = LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+                            Log.d("XXXnextLessonTime", "next lesson available at: ${assignment.available_at} and formatted is $timeAvailable")
 
                             if(ctr==0) {
                                 firstAssignmentTime = timeAvailable
@@ -76,11 +83,13 @@ class AccountSettings : Fragment() {
                                 }
                             }
                             ctr++
-                            Log.d("XXXnextLessonTime", "next lesson available at: $timeAvailable current time is $formattedCurrentTime")
+                            Log.d("XXXnextLessonTime", "next lesson available at: $timeAvailable current time is $currentTime")
                         }
-                        val timeUntilFirstAssignmentOpens = currentTime.toLocalTime().until(firstAssignmentTime.toLocalTime(), ChronoUnit.SECONDS)
+                        //val timeUntilFirstAssignmentOpens = currentTime.toLocalTime().until(firstAssignmentTime.toLocalTime(), ChronoUnit.SECONDS)
+                        val timeUntilFirstAssignmentOpens = Duration.between(currentTime, firstAssignmentTime).toMillis()
+                        Log.d("XXXtimer", "Calculation of time: ${currentTime} - ${firstAssignmentTime} = $timeUntilFirstAssignmentOpens")
                         assignment_timer.isCountDown = true
-                        assignment_timer.base=timeUntilFirstAssignmentOpens
+                        assignment_timer.base= SystemClock.elapsedRealtime() + timeUntilFirstAssignmentOpens
                         assignment_timer.start()
                     }
                 } else {setTimeRemaining("No assignments pending. Please complete your current assignments to unlock new ones!")}

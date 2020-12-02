@@ -36,6 +36,6 @@ data class WanikaniAssignments  (
 data class WanikaniUser (
     @SerializedName("username")
     var username:String,
-    @SerializedName("levels")
-    var levels:String
+    @SerializedName("level")
+    var level:String
 )

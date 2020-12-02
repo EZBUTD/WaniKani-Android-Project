@@ -38,10 +38,11 @@ class Repository(private val wanikaniApi: WanikaniApi) {
     suspend fun fetchFutureAssignments() : List<WanikaniAssignments> {
         val currentTime = LocalDateTime.now()
 
-        val formatter = DateTimeFormatter.ISO_INSTANT
-        val formattedCurrentTime = currentTime.format(formatter)
-        Log.d("XXXcurrenttime", "Current time is: $currentTime formatted time is $formattedCurrentTime")
-        return unpackPosts(wanikaniApi.get_assignments_available_after(formattedCurrentTime.toString()))
+        Log.d("XXXcurrenttime", "Current time is: $currentTime")
+        //val formatter = DateTimeFormatter.ISO_INSTANT
+        //val formattedCurrentTime = currentTime.format(formatter)
+        //Log.d("XXXcurrenttime", "Current time is: $currentTime formatted time is $formattedCurrentTime")
+        return unpackPosts(wanikaniApi.get_assignments_available_after(currentTime.toString()))
     }
 
     suspend fun fetchAssignments_for_review() : List<WanikaniAssignments> {
