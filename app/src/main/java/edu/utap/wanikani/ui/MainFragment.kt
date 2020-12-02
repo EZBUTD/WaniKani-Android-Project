@@ -139,7 +139,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
 //            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
             //.removeSurrounding("[", "]")
-//            viewModel.netSubjectsLesson()
+            viewModel.netSubjectsLesson()
 //
 //            viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
 //                    Observer {
@@ -149,9 +149,9 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 //                            }
 //                        }
 //                    })
-            class NestedJSON_single internal constructor(val assignment_id: String, val incorrect_meaning_answers: String, val incorrect_reading_answers: String)
-            class NestedJSON internal constructor(val review: NestedJSON_single)
-            viewModel.create_review(WanikaniApi.NestedJSON(WanikaniApi.NestedJSON_single(assignment_id = "206307845",incorrect_meaning_answers = "0",incorrect_reading_answers = "0")))
+//            class NestedJSON_single internal constructor(val assignment_id: String, val incorrect_meaning_answers: String, val incorrect_reading_answers: String)
+//            class NestedJSON internal constructor(val review: NestedJSON_single)
+//            viewModel.create_review(WanikaniApi.NestedJSON(WanikaniApi.NestedJSON_single(assignment_id = "206307845",incorrect_meaning_answers = "0",incorrect_reading_answers = "0")))
             /*
             val data= "1,2,3"
             val data2 = listOf(1,2,3)
