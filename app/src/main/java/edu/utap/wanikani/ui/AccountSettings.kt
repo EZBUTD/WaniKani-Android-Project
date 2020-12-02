@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
@@ -92,7 +93,9 @@ class AccountSettings : Fragment() {
                         assignment_timer.base= SystemClock.elapsedRealtime() + timeUntilFirstAssignmentOpens
                         assignment_timer.start()
                     }
-                } else {setTimeRemaining("No assignments pending. Please complete your current assignments to unlock new ones!")}
+                } else {
+                    setTimeRemaining("No assignments pending. Please complete your current assignments to unlock new ones!")
+                }
             })
 
 
