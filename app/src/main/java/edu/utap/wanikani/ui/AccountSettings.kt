@@ -92,6 +92,11 @@ class AccountSettings : Fragment() {
                         assignment_timer.isCountDown = true
                         assignment_timer.base= SystemClock.elapsedRealtime() + timeUntilFirstAssignmentOpens
                         assignment_timer.start()
+                        assignment_timer.setOnChronometerTickListener {
+                            if(it.base<=SystemClock.elapsedRealtime()) {
+                                it.stop()
+                            }
+                        }
                     }
                 } else {
                     setTimeRemaining("No assignments pending. Please complete your current assignments to unlock new ones!")
