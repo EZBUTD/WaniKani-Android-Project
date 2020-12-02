@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -41,13 +42,17 @@ class ReviewQuiz : Fragment() {
     private var questionDone : MutableList<Boolean> = arrayListOf()
 
     private fun initCharacters(){
-
         charTV.text=characters[0]
-
     }
 
     private fun initTitle(){
         nameTypeTV.text = "Radical Name"
+    }
+
+    private fun initHint() {
+        hintTV.setOnClickListener{
+            Toast.makeText(context, "The answer is: ${answers[currentIdx]}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initAnswerCheck(){
@@ -204,6 +209,7 @@ class ReviewQuiz : Fragment() {
                     Log.d("XXXquizDone", "$i is set to false")
                 }
                 initCharacters()
+                initHint()
                 //Pop back twice if coming from the lesson frag
                 requireActivity().onBackPressedDispatcher.addCallback(this){
                     parentFragmentManager.popBackStack()
@@ -239,6 +245,7 @@ class ReviewQuiz : Fragment() {
                                     questionDone.add(false)
                                 }
                                 initCharacters()
+                                initHint()
                             }
                         })
 
