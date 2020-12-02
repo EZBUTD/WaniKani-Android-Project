@@ -19,6 +19,8 @@ import edu.utap.wanikani.api.WanikaniApi
 import edu.utap.wanikani.api.WanikaniSubjects
 import edu.utap.wanikani.glide.Glide
 import kotlinx.android.synthetic.main.fragment_review_quiz.*
+import kotlinx.android.synthetic.main.fragment_review_quiz.charTV
+import kotlinx.android.synthetic.main.fragment_review_quiz.counterTV
 
 class ReviewQuiz : Fragment() {
 
@@ -40,6 +42,10 @@ class ReviewQuiz : Fragment() {
     private var assignments_ids= HashMap<Int,Int>()
 
     private var questionDone : MutableList<Boolean> = arrayListOf()
+
+    private fun setCounter(){
+        counterTV.text = (currentIdx+1).toString() + "/" + answers.size
+    }
 
     private fun initCharacters(){
         charTV.text=characters[0]
@@ -140,6 +146,7 @@ class ReviewQuiz : Fragment() {
         Log.d("XXXnextQuestion1", "$nextIdx is the next idx")
 
         currentIdx = nextIdx
+        setCounter()
         responseET.setBackgroundColor(Color.WHITE)
         answerLay.setBackgroundColor(Color.WHITE)
 //        charTV.text = debug_characters[currentIdx]
@@ -210,6 +217,7 @@ class ReviewQuiz : Fragment() {
                 }
                 initCharacters()
                 initHint()
+                setCounter()
                 //Pop back twice if coming from the lesson frag
                 requireActivity().onBackPressedDispatcher.addCallback(this){
                     parentFragmentManager.popBackStack()
@@ -224,7 +232,7 @@ class ReviewQuiz : Fragment() {
                         Observer {
                             if (it!= null){
                                 for (i in it){
-                                    //Log.d("XXXwessubjects", "subject char is: ${i.cha}")
+                                   Log.d("XXXReview", "Adding subject id: ${i.subject_id}")
 //                                    characters.add(i.cha)
                                     if(i.cha!=null){
                                         characters.add(i.cha)
@@ -246,6 +254,7 @@ class ReviewQuiz : Fragment() {
                                 }
                                 initCharacters()
                                 initHint()
+                                setCounter()
                             }
                         })
 

@@ -53,6 +53,10 @@ class Lesson : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    private fun setCounter(){
+        counterTV.text = (currentIdx+1).toString() + "/" + subject_id_list.size
+    }
+
     private fun initCharacters(){
         charTV.text = subject_list[currentIdx].cha
     }
@@ -128,6 +132,7 @@ class Lesson : Fragment() {
 
             charTV.text = subject_list[currentIdx].cha
             meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
+            setCounter()
             lessonDone[currentIdx*tabCount]=true
         }
 
@@ -144,6 +149,7 @@ class Lesson : Fragment() {
 
             charTV.text = subject_list[currentIdx].cha
             meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
+            setCounter()
 
             val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
             lessonDone[lessonDoneIdx]=true
@@ -200,6 +206,7 @@ class Lesson : Fragment() {
                         initTabs()
                         initCharacters()
                         initMeaning()
+                        setCounter()
                     }
                 })
 
