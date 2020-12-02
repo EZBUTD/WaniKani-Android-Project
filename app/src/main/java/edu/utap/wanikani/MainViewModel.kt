@@ -128,6 +128,12 @@ class MainViewModel : ViewModel() {
 //
 //        }
     }
+    fun create_review(Request: WanikaniApi.NestedJSON) {
+        viewModelScope.launch( context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            repo.create_Review(Request)//this should be assignment id
+        }
+    }
 
     // XXX Another function is necessary
     fun observeWanikaniSubject() : MutableLiveData<WanikaniSubjects> {

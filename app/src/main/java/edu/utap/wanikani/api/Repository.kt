@@ -8,6 +8,10 @@ import java.time.format.DateTimeFormatter
 
 class Repository(private val wanikaniApi: WanikaniApi) {
 
+    suspend fun create_Review(Request: WanikaniApi.NestedJSON) {
+        wanikaniApi.create_review(Request)
+    }
+
     suspend fun fetchVocab(id: Int) : MutableLiveData<WanikaniSubjects> {
 //        var temp=MutableLiveData<WanikaniSubjects>()
 //        temp= MutableLiveData(wanikaniApi.single_character(id).data)
