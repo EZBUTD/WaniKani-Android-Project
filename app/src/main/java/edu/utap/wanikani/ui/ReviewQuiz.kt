@@ -106,7 +106,9 @@ class ReviewQuiz : Fragment() {
                 nextQuestion()
 
         } else {
+            //User gets two tries otherwise we move on
             if (tries == 1) {
+                questionDone[currentIdx] = true
                 nextQuestion()
             } else {
                 answerLay.setBackgroundColor(Color.RED)
