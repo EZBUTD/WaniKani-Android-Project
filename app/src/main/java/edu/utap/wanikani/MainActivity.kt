@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentTransaction
 import edu.utap.wanikani.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var globalDebug = false
+    }
     private lateinit var homeFragment: MainFragment
 
     private fun initHomeFragment() {

@@ -157,7 +157,15 @@ class Review_quiz_mod : Fragment() {
 //                    var temp=subject_meanings_list
                     quiz_data.add(it)
                     answers.add(it.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
-                    characters.add(it.cha)
+                    if(it.cha!=null){
+                        characters.add(it.cha)
+                    }
+                    else{
+                        //need to fetch url image here...
+                        characters.add(it.character_image[0].toString().split(",")[0])
+                    }
+                    var temp=characters
+
                     initCharacters()
                     initTitle()
                     initAnswerCheck()

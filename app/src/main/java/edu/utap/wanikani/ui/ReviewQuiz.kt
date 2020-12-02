@@ -1,5 +1,6 @@
 package edu.utap.wanikani.ui
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.lifecycle.Observer
 import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import edu.utap.wanikani.api.WanikaniSubjects
+import edu.utap.wanikani.glide.Glide
 import kotlinx.android.synthetic.main.fragment_review_quiz.*
 
 class ReviewQuiz : Fragment() {
@@ -38,6 +40,7 @@ class ReviewQuiz : Fragment() {
     private var questionDone : MutableList<Boolean> = arrayListOf()
 
     private fun initCharacters(){
+
         charTV.text=characters[0]
 
     }
@@ -104,13 +107,22 @@ class ReviewQuiz : Fragment() {
             nextIdx+= currentIdx+1
         }
 
+
         Log.d("XXXnextQuestion1", "$nextIdx is the next idx")
 
         currentIdx = nextIdx
         responseET.setBackgroundColor(Color.WHITE)
         answerLay.setBackgroundColor(Color.WHITE)
 //        charTV.text = debug_characters[currentIdx]
-        charTV.text=characters[currentIdx]
+        if(characters[currentIdx].contains("https:")){
+            var url=characters[currentIdx]
+            Glide.glideFetch(url, url, charImageTV)
+            charTV.text="" //set textview to null and need to load image view somehow
+        }
+        else{
+            charImageTV.setImageDrawable(null)
+            charTV.text=characters[currentIdx]
+        }
         responseET.text.clear()
     }
 
@@ -144,7 +156,15 @@ class ReviewQuiz : Fragment() {
                 quiz_data = viewModel.get_quiz_data()
                 for (i in quiz_data) {
                     answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
-                    characters.add(i.cha)
+
+                    if(i.cha!=null){
+                        characters.add(i.cha)
+                    }
+                    else{
+                        //need to fetch url image here...
+                        characters.add(i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\""))
+                    }
+                    var temp=characters
                 }
                 assignments_ids= viewModel.observeAssignment_ids().value!!
 
@@ -168,7 +188,15 @@ class ReviewQuiz : Fragment() {
                             if (it!= null){
                                 for (i in it){
                                     //Log.d("XXXwessubjects", "subject char is: ${i.cha}")
-                                    characters.add(i.cha)
+//                                    characters.add(i.cha)
+                                    if(i.cha!=null){
+                                        characters.add(i.cha)
+                                    }
+                                    else{
+                                        //need to fetch url image here...
+                                        characters.add(i.character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\""))
+                                    }
+                                    var temp=characters
                                     answers.add(i.meanings[0].toString().split(",")[0].removePrefix("{meaning="))
 
                                     questionDone.add(false)

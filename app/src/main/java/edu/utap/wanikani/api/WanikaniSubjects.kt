@@ -14,7 +14,10 @@ data class WanikaniSubjects  (
     @SerializedName("reading_mnemonic")
     val reading_mnemonic : String,
     @SerializedName("id")
-    var subject_id : Int
+    var subject_id : Int,
+    @SerializedName("character_images")
+    var character_image : MutableList<Any>
+
 )
 
 data class WanikaniAssignments  (
