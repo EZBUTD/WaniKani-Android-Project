@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -31,6 +32,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private val viewModel: MainViewModel by activityViewModels()
+    private var lessonSize = 0
+    private var reviewSize = 0
 
     private fun setUserName(myName: String){
         nameTV.text = myName
@@ -48,7 +51,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         viewModel.observeAvailableReviewSubjectsId().observe(viewLifecycleOwner,
             Observer { myReviewList ->
                 if (myReviewList != null) {
-                    setReviewsTV(myReviewList.size)
+                    reviewSize = myReviewList.size
+                    setReviewsTV(reviewSize)
                 } else {
                     setReviewsTV(0)
                 }
@@ -59,7 +63,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         viewModel.observeAvailableLessonSubjectsId().observe(viewLifecycleOwner,
             Observer { myLessonList ->
                 if (myLessonList != null) {
-                    setLessonsTV(myLessonList.size)
+                    lessonSize = myLessonList.size
+                    setLessonsTV(lessonSize)
                     Log.d("XXXlesson size:", "$myLessonList")
                 } else {
                     setLessonsTV(0)
@@ -105,21 +110,29 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         initLessonObserver()
 
         startBut.setOnClickListener{
-            val lessonFragment = Lesson.newInstance(0)
-            parentFragmentManager.beginTransaction()
-                .add(R.id.main_frame, lessonFragment)
-                .addToBackStack("backHome")
-                .commit()
+            if(lessonSize > 0) {
+                val lessonFragment = Lesson.newInstance(0)
+                parentFragmentManager.beginTransaction()
+                    .add(R.id.main_frame, lessonFragment)
+                    .addToBackStack("backHome")
+                    .commit()
+            } else {
+                Toast.makeText(context, "No lessons currently available", Toast.LENGTH_SHORT).show()
+            }
         }
 
         reviewBut.setOnClickListener{
-//            val reviewFragment = Review.newInstance(0)
-            //Use isQuiz=0 to indicate this is not a quiz
-            val reviewFragment=ReviewQuiz.newInstance(0)
-            parentFragmentManager.beginTransaction()
+            if(reviewSize>0) {
+                //Use isQuiz=0 to indicate this is not a quiz
+                val reviewFragment = ReviewQuiz.newInstance(0)
+                parentFragmentManager.beginTransaction()
                     .add(R.id.main_frame, reviewFragment)
                     .addToBackStack("backHome")
                     .commit()
+            } else {
+                Toast.makeText(context, "No reviews currently available", Toast.LENGTH_SHORT).show()
+
+            }
         }
 
         accountBut.setOnClickListener{
