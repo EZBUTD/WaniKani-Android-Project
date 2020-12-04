@@ -159,16 +159,24 @@ class Lesson : Fragment() {
         }
 
         rightArrowTV.setOnClickListener{
+            if(currentIdx==subject_list.size-1){
+                //reached end of quiz
+                //don't allow user to continue
+
+            }else{
+
+
             continue_related_vocab()//fetch next related vocab
             if (currentTabIdx == radicalTabsTitles.size-1) {
                 incrementIdx()
                 currentTabIdx=0
                 openTab(currentTabIdx)
             }
-            //else {
-            //    currentTabIdx++
-            //    openTab(currentTabIdx)
-            //}
+
+            else {
+                currentTabIdx++
+                openTab(currentTabIdx)
+            }
 
             charTV.text = subject_list[currentIdx].cha
             meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
@@ -178,7 +186,7 @@ class Lesson : Fragment() {
             lessonDone[lessonDoneIdx]=true
             Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
             checkIfLessonDone()
-        }
+        }}
     }
 
     private fun decrementIdx() {
