@@ -33,8 +33,8 @@ class Lesson : Fragment() {
     //fragment tabs for the radicals section
     private var tabCount : Int = 1
     private var currentTabIdx : Int = 0
-    //private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Examples")          //This is the correct list, and we'll need to use this list once we are able to get the examples
-    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic")
+    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic", "Kanji Example")          //This is the correct list, and we'll need to use this list once we are able to get the examples
+//    private val radicalTabsTitles : List<String> = listOf("Name Mnemonic")
 
     //Some hardcoded values just to see what my layout looks like.
 //    private val debug_characters : List<String> = listOf("一", "ハ")
@@ -45,6 +45,7 @@ class Lesson : Fragment() {
     private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
 
     private val subject_list = mutableListOf<WanikaniSubjects>()
+    private val related_subject_list = mutableListOf<WanikaniSubjects>()
     private val subject_id_list = mutableListOf<Int>()
 
     private var lessonDone : MutableList<Boolean> = arrayListOf()          //Use this to check that User has gone through each tab in the lesson
@@ -100,6 +101,14 @@ class Lesson : Fragment() {
                     .commit()
         }
     }
+
+    private fun init_related_vocab(){
+        viewModel.launch_subject_data(subject_list[currentIdx].related_subject_ids[0])
+    }
+
+    private fun continue_related_vocab(){
+        viewModel.launch_subject_data(subject_list[currentIdx+1].related_subject_ids[0])
+    }
     
     private fun checkIfLessonDone() : Boolean {
         if ( lessonDone.contains(false))
@@ -115,11 +124,24 @@ class Lesson : Fragment() {
     }
 
     private fun openTab(tabIdx: Int) {
+
+
         tabTitleTV.text = radicalTabsTitles[tabIdx]
+
 
         if (tabIdx == 0){
              textBlockTV.text = subject_list[currentIdx].meaning_mnemonic
         } else {
+//            textBlockTV.text="sample here"
+            //need to fetch images for related subject ids
+            var temp=""
+            var test=related_subject_list
+
+            temp=related_subject_list[currentIdx].cha.plus("meaning: ")
+
+            textBlockTV.text=temp.plus(related_subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning="))
+
+
 //            textBlockTV.text = debug_examples[currentIdx]
         }
     }
@@ -137,6 +159,7 @@ class Lesson : Fragment() {
         }
 
         rightArrowTV.setOnClickListener{
+            continue_related_vocab()//fetch next related vocab
             if (currentTabIdx == radicalTabsTitles.size-1) {
                 incrementIdx()
                 currentTabIdx=0
@@ -198,6 +221,11 @@ class Lesson : Fragment() {
                             //for (i in 0 until tabCount) {
                                 lessonDone.add(false)
                             //}
+//                            for(x in i.related_subject_ids){ //too many requests this way
+//                                viewModel.launch_subject_data(x)
+//                            }
+//                            viewModel.launch_subject_data(i.related_subject_ids[0])
+
                             ctr++
                             if(ctr==MAX_LESSON_COUNT)
                                 break
@@ -207,8 +235,29 @@ class Lesson : Fragment() {
                         initCharacters()
                         initMeaning()
                         setCounter()
+                        init_related_vocab()
+
+//                        var id_related=subject_list[currentIdx].related_subject_ids[0]
+//                        viewModel.launch_subject_data(id_related)
                     }
                 })
+
+        viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
+            Observer {
+                if (it!= null){
+                    if(related_subject_list.contains(it)){
+//                        var temp=viewModel.observeWanikaniSubject()
+//                        var temp2=viewModel.observeWanikaniSubject()
+
+                    }else{
+                        related_subject_list.add(it)
+
+                    }
+
+                    }
+
+
+            })
 
 
         requireActivity().onBackPressedDispatcher.addCallback(this){

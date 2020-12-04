@@ -16,7 +16,9 @@ data class WanikaniSubjects  (
     @SerializedName("id")
     var subject_id : Int,
     @SerializedName("character_images")
-    var character_image : MutableList<Any>
+    var character_image : MutableList<Any>,
+    @SerializedName("amalgamation_subject_ids")
+    var related_subject_ids : MutableList<Int>
 
 )
 
