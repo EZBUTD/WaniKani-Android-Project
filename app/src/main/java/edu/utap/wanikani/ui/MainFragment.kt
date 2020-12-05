@@ -146,37 +146,11 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         }
 
         testBut.setOnClickListener{
-//            viewModel.netRefresh()
-//            viewModel.move_to_reviews(206307847)
-//            viewModel.get_assignments_ids()
-//            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(0).toString())
-//            myprogresstextTV.setText(viewModel.observeAssignment_ids().value?.get(1).toString())
-            //.removeSurrounding("[", "]")
-            viewModel.netSubjectsLesson()
-//
-//            viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
-//                    Observer {
-//                        if (it!= null){
-//                            for (i in it){
-//                                Log.d("XXXwessubjects", "subject char is: ${i.cha}")
-//                            }
-//                        }
-//                    })
-//            class NestedJSON_single internal constructor(val assignment_id: String, val incorrect_meaning_answers: String, val incorrect_reading_answers: String)
-//            class NestedJSON internal constructor(val review: NestedJSON_single)
-//            viewModel.create_review(WanikaniApi.NestedJSON(WanikaniApi.NestedJSON_single(assignment_id = "206307845",incorrect_meaning_answers = "0",incorrect_reading_answers = "0")))
-            /*
-            val data= "1,2,3"
-            val data2 = listOf(1,2,3)
-            val data3 = data2.joinToString(separator = ",")
-            val new_data = arrayListOf(1.toString(), 2.toString(), 3.toString())
-            var new_data2 = new_data.joinToString(separator = ",")
-            Log.d("XXXcsvtest", "${new_data2}")
-            Log.d("XXXcsvtest", "${data3}")
-            viewModel.get_subject_data(new_data2)
-            viewModel.observeSubject_data()
+            viewModel.netUser()
+            viewModel.netRefresh()
+            viewModel.netIdsLessons()
+            viewModel.netIdsReview()
 
-             */
         }
     }
 
