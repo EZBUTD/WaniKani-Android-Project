@@ -40,6 +40,7 @@ class ReviewQuiz : Fragment() {
     private var characters= mutableListOf<String>()
     private var answers= mutableListOf<String>()
     private var assignments_ids= HashMap<Int,Int>()
+    private var correct_answers=mutableListOf<WanikaniSubjects>()
 
     private var questionDone : MutableList<Boolean> = arrayListOf()
 
@@ -70,6 +71,7 @@ class ReviewQuiz : Fragment() {
     private fun checkAnswer() {
 //        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
         if (responseET.text.toString().toLowerCase().trim() == answers[currentIdx].toLowerCase()) {
+            correct_answers.add(quiz_data[currentIdx])
             answerLay.setBackgroundColor(Color.GREEN)
             responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true
@@ -92,7 +94,11 @@ class ReviewQuiz : Fragment() {
                         var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
                         //check if key actually is right
                         var temp=assignment_id_key
-                        viewModel.move_to_reviews(assignment_id_key)
+                        //only move if answer was right.
+                        if(correct_answers.contains(item)){
+                            viewModel.move_to_reviews(assignment_id_key)
+                        }
+
                     }
                     parentFragmentManager.popBackStack()
                     parentFragmentManager.popBackStack()
@@ -150,6 +156,7 @@ class ReviewQuiz : Fragment() {
         responseET.setBackgroundColor(Color.WHITE)
         answerLay.setBackgroundColor(Color.WHITE)
 //        charTV.text = debug_characters[currentIdx]
+
         if(characters[currentIdx].contains("https:")){
 
             var url=characters[currentIdx]
