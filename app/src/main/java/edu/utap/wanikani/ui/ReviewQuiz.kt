@@ -27,58 +27,74 @@ class ReviewQuiz : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
 
     //Is review tells whether to use the passed down subjects from lesson or fetch from the net
-    private var isQuiz : Int =0
+    private var isQuiz: Int = 0
 
-    private var currentIdx : Int =0
-    private var tries : Int = 0
+    private var currentIdx: Int = 0
+    private var tries: Int = 0
     //fragment tabs for the radicals section
 
     //Some hardcoded values just to see what my layout looks like.
 //    private val debug_characters : List<String> = listOf("一", "ハ")
 //    private val debug_answers : List<String> = listOf("Ground", "Fins")
-    private var quiz_data= mutableListOf<WanikaniSubjects>()
-    private var characters= mutableListOf<String>()
-    private var answers= mutableListOf<String>()
-    private var assignments_ids= HashMap<Int,Int>()
-    private var correct_answers=mutableListOf<WanikaniSubjects>()
+    private var quiz_data = mutableListOf<WanikaniSubjects>()
+    private var characters = mutableListOf<String>()
+    private var answers = mutableListOf<String>()
+    private var assignments_ids = HashMap<Int, Int>()
+    private var correct_answers = mutableListOf<WanikaniSubjects>()
 
-    private var questionDone : MutableList<Boolean> = arrayListOf()
+    private var questionDone: MutableList<Boolean> = arrayListOf()
 
-    private fun setCounter(){
-        counterTV.text = (currentIdx+1).toString() + "/" + answers.size
+    private fun setCounter() {
+        counterTV.text = (currentIdx + 1).toString() + "/" + answers.size
     }
 
-    private fun initCharacters(){
-        charTV.text=characters[0]
+    private fun initCharacters() {
+        charTV.text = characters[0]
     }
 
-    private fun initTitle(){
+    private fun initTitle() {
         nameTypeTV.text = "Radical Name"
     }
 
     private fun initHint() {
-        hintTV.setOnClickListener{
-            Toast.makeText(context, "The answer is: ${answers[currentIdx]}", Toast.LENGTH_SHORT).show()
+        hintTV.setOnClickListener {
+            Toast.makeText(context, "The answer is: ${answers[currentIdx]}", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
-    private fun initAnswerCheck(){
-        answerArrow.setOnClickListener{
-            checkAnswer()
+    private fun initAnswerCheck() {
+
+        answerArrow.setOnClickListener {
+            if(responseET.text.toString().toLowerCase().trim().isEmpty()){
+                Toast.makeText(context, "need to input an answer", Toast.LENGTH_SHORT)
+                    .show()
+            }else{
+                checkAnswer()
+            }
+
         }
     }
 
     private fun checkAnswer() {
 //        if (responseET.text.toString().toLowerCase() == debug_answers[currentIdx].toLowerCase()) {
         if (responseET.text.toString().toLowerCase().trim() == answers[currentIdx].toLowerCase()) {
-            correct_answers.add(quiz_data[currentIdx])
+            if (isQuiz == 1) {
+                correct_answers.add(quiz_data[currentIdx])
+            }
+            else{
+                quiz_data = viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
+                correct_answers.add(quiz_data[currentIdx])
+
+            }
+
             answerLay.setBackgroundColor(Color.GREEN)
             responseET.setBackgroundColor(Color.GREEN)
             questionDone[currentIdx] = true
             //Thread.sleep(2000)
             Log.d("XXXcheckanswer", "correct answer")
 
-            if (lessonFinished()){
+            if (lessonFinished()) {
                 //submit put requests to mark items as succesfully completed and move into review queue
 //                for(item in quiz_data){
 //                    var temp2=assignments_ids
@@ -88,14 +104,16 @@ class ReviewQuiz : Fragment() {
 //                    viewModel.move_to_reviews(assignment_id_key)
 //                }
                 //Pop back twice if coming from the lesson frag; pop back once if coming from the home frag
-                if(isQuiz==1) {
-                    for(item in quiz_data){
-                        var temp2=assignments_ids
-                        var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
+                if (isQuiz == 1) {
+                    for (item in quiz_data) {
+                        var temp2 = assignments_ids
+                        var assignment_id_key =
+                            assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
+                                .next()
                         //check if key actually is right
-                        var temp=assignment_id_key
+                        var temp = assignment_id_key
                         //only move if answer was right.
-                        if(correct_answers.contains(item)){
+                        if (correct_answers.contains(item)) {
                             viewModel.move_to_reviews(assignment_id_key)
                         }
 
@@ -103,16 +121,28 @@ class ReviewQuiz : Fragment() {
                     parentFragmentManager.popBackStack()
                     parentFragmentManager.popBackStack()
                 } else {
-                    quiz_data= viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
-                    for(item in quiz_data){
-                        assignments_ids= viewModel.observeAssignment_ids().value!!
-                        var temp2=assignments_ids
-                        var assignment_id_key:Int?=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
-                        if(assignment_id_key==null){
+                    quiz_data = viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
+                    for (item in quiz_data) {
+                        assignments_ids = viewModel.observeAssignment_ids().value!!
+                        var temp2 = assignments_ids
+                        var assignment_id_key: Int? =
+                            assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
+                                .next()
+                        if (assignment_id_key == null) {
                             //somethig went wrong
-                        }else{
-                            var temp=assignment_id_key
-                            viewModel.create_review(WanikaniApi.NestedJSON(WanikaniApi.NestedJSON_single(assignment_id = assignment_id_key.toString(),incorrect_meaning_answers = "0",incorrect_reading_answers = "0")))
+                        } else {
+                            if (correct_answers.contains(item)) { //only send review create request if answer is correct
+                            var temp = assignment_id_key
+                            viewModel.create_review(
+                                WanikaniApi.NestedJSON(
+                                    WanikaniApi.NestedJSON_single(
+                                        assignment_id = assignment_id_key.toString(),
+                                        incorrect_meaning_answers = "0",
+                                        incorrect_reading_answers = "0"
+                                    )
+                                )
+                            )
+                            }
                         }
                         //check if key actually is right
 
@@ -139,13 +169,13 @@ class ReviewQuiz : Fragment() {
     private fun nextQuestion() {
         tries = 0
 
-        var nextIdx = questionDone.subList(currentIdx+1, questionDone.size).indexOf(false)
+        var nextIdx = questionDone.subList(currentIdx + 1, questionDone.size).indexOf(false)
         Log.d("XXXnextQuestion0", "$nextIdx is the next idx")
-        if(nextIdx == -1) {
+        if (nextIdx == -1) {
             nextIdx = questionDone.indexOf(false)
         } else {
             //Accounts for the offset introduced by taking the sublist
-            nextIdx+= currentIdx+1
+            nextIdx += currentIdx + 1
         }
 
 
@@ -157,18 +187,21 @@ class ReviewQuiz : Fragment() {
         answerLay.setBackgroundColor(Color.WHITE)
 //        charTV.text = debug_characters[currentIdx]
 
-        if(characters[currentIdx].contains("https:")){
 
-            var url=characters[currentIdx]
+        if (characters[currentIdx].contains("https:")) {
+
+            var url = characters[currentIdx]
             Glide.glideFetch(url, url, charImageTV)
-            charTV.text="" //set textview to null and need to load image view somehow
-        }
-        else{
+            charTV.text = "" //set textview to null and need to load image view somehow
+        } else {
             charImageTV.setImageDrawable(null)
-            charTV.text=characters[currentIdx]
+            charTV.text = characters[currentIdx]
         }
-        responseET.text.clear()
-    }
+
+    responseET.text.clear()
+}
+
+
 
     private fun lessonFinished() :Boolean {
         return !questionDone.contains(false)
