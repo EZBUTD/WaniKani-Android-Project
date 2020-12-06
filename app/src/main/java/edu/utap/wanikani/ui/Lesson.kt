@@ -153,7 +153,9 @@ class Lesson : Fragment() {
                 meaningTV.text = subject_list[currentIdx].meanings[0].toString()
                     .split(",")[0].removePrefix("{meaning=")
                 setCounter()
-                lessonDone[currentIdx * tabCount] = true
+            } else {
+                currentTabIdx = 0
+                openTab(currentTabIdx)
             }
         }
 
