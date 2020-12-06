@@ -92,6 +92,7 @@ class Lesson : Fragment() {
 
         tabTitleTV.text = radicalTabsTitles[0]
         textBlockTV.text= subject_list[currentIdx].meaning_mnemonic
+        radTab1TV.setTextColor(Color.RED)
 
 
         //radTab1TV.setOnClickListener{
@@ -149,6 +150,8 @@ class Lesson : Fragment() {
 
         if (tabIdx == 0){
              textBlockTV.text = subject_list[currentIdx].meaning_mnemonic
+            radTab1TV.setTextColor(Color.RED)
+            radTab2TV.setTextColor(Color.WHITE)
         } else {
 //            textBlockTV.text="sample here"
             //need to fetch images for related subject ids
@@ -157,6 +160,8 @@ class Lesson : Fragment() {
             temp=related_subject_list[currentIdx].cha.plus("meaning: ")
 
             textBlockTV.text=temp.plus(related_subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning="))
+            radTab1TV.setTextColor(Color.WHITE)
+            radTab2TV.setTextColor(Color.RED)
         }
     }
 
@@ -189,31 +194,31 @@ class Lesson : Fragment() {
                 checkIfLessonDone()
             }else{
 
-            continue_related_vocab()//fetch next related vocab
-            if (currentTabIdx == radicalTabsTitles.size-1) {
-                incrementIdx()
+                continue_related_vocab()//fetch next related vocab
+                if (currentTabIdx == radicalTabsTitles.size-1) {
+                    incrementIdx()
 
-                Log.d("XXXtabidx", "1 tab idx is $currentTabIdx")
-                currentTabIdx=0
-                openTab(currentTabIdx)
+                    Log.d("XXXtabidx", "1 tab idx is $currentTabIdx")
+                    currentTabIdx=0
+                    openTab(currentTabIdx)
+                }
+                else {
+                    Log.d("XXXtabidx", "0 tab idx is $currentTabIdx")
+                    currentTabIdx++
+                    openTab(currentTabIdx)
+                }
+                Log.d("XXXidx", "idx is $currentIdx")
+
+                charTV.text = subject_list[currentIdx].cha
+                meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
+                setCounter()
+
+                //val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
+                lessonDone[currentIdx]=true
+                //Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
+                checkIfLessonDone()
             }
-
-            else {
-                Log.d("XXXtabidx", "0 tab idx is $currentTabIdx")
-                currentTabIdx++
-                openTab(currentTabIdx)
-            }
-            Log.d("XXXidx", "idx is $currentIdx")
-
-            charTV.text = subject_list[currentIdx].cha
-            meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
-            setCounter()
-
-            val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
-            lessonDone[currentIdx]=true
-            Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
-            checkIfLessonDone()
-        }}
+        }
     }
 
     private fun decrementIdx() {
