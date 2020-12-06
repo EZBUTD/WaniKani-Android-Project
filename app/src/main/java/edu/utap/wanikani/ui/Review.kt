@@ -160,7 +160,6 @@ class Review : Fragment() {
 
     private fun decrementIdx() {
         if( currentIdx == 0)
-//            currentIdx=
 //            currentIdx = debug_characters.size-1
 
         else

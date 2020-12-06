@@ -163,6 +163,7 @@ class Lesson : Fragment() {
                     currentTabIdx++
                     openTab(currentTabIdx)
                 }
+                checkIfLessonDone()
             }else{
 
             continue_related_vocab()//fetch next related vocab
