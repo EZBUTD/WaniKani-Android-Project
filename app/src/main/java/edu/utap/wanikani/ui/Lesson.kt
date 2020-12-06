@@ -42,13 +42,12 @@ class Lesson : Fragment() {
 //    private val debug_nameMnemonic :List<String> = listOf("This radical consists of a single, horizontal stroke. What's the biggest, single, horizontal stroke? That's the ground. Look at the ground, look at this radical, now look at the ground again. Kind of the same, right?", "Picture a fish. Now picture the fish a little worse, like a child's drawing of the fish. Now erase the fish's body and... you're left with two fins! Do you see these two fins? Yeah, you see them.")
 //    private val debug_examples :List<String> = listOf("Here is a glimpse of some of the kanji you will be learning that utilize Ground. Can you see where the radical fits in the kanji?", "Here is a glimpse of some of the kanji you will be learning that utilize Fins. Can you see where the radical fits in the kanji?")
 
-    private val subject_meanings_list = mutableListOf<WanikaniSubjects>()
-
-    private val subject_list = mutableListOf<WanikaniSubjects>()
-    private val related_subject_list = mutableListOf<WanikaniSubjects>()
-    private val subject_id_list = mutableListOf<Int>()
+    private var subject_list = mutableListOf<WanikaniSubjects>()
+    private var related_subject_list = mutableListOf<WanikaniSubjects>()
+    private var subject_id_list = mutableListOf<Int>()
 
     private var lessonDone : MutableList<Boolean> = arrayListOf()          //Use this to check that User has gone through each tab in the lesson
+    private var userCanStartQuiz  = 0          //Use this to check that User has gone through each tab in the lesson
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,15 +76,15 @@ class Lesson : Fragment() {
         textBlockTV.text= subject_list[currentIdx].meaning_mnemonic
 
 
-        radTab1TV.setOnClickListener{
-            currentTabIdx=0
-            openTab(currentTabIdx)
-        }
+        //radTab1TV.setOnClickListener{
+        //    currentTabIdx=0
+        //    openTab(currentTabIdx)
+        //}
 
-        radTab2TV.setOnClickListener{
-            currentTabIdx=1
-            openTab(currentTabIdx)
-        }
+        //radTab2TV.setOnClickListener{
+        //    currentTabIdx=1
+        //    openTab(currentTabIdx)
+        //}
     }
 
     private fun initQuiz(){
@@ -113,19 +112,20 @@ class Lesson : Fragment() {
     private fun checkIfLessonDone() : Boolean {
         if ( lessonDone.contains(false))
             return false
-        else {
+        else if (userCanStartQuiz ==0) {
             //XXX probably need to use the API to return some call back to the servers here
+            userCanStartQuiz=1              //Used so we only enter in this once
             quizBut.isClickable=true
             quizBut.isEnabled=true
             quizBut.setBackgroundColor(Color.GREEN)
             Toast.makeText(context, "Congratulations, you have finished the lesson and can now start the quiz", Toast.LENGTH_SHORT).show()
             return true
+        } else {
+            return true
         }
     }
 
     private fun openTab(tabIdx: Int) {
-
-
         tabTitleTV.text = radicalTabsTitles[tabIdx]
 
 
@@ -135,55 +135,61 @@ class Lesson : Fragment() {
 //            textBlockTV.text="sample here"
             //need to fetch images for related subject ids
             var temp=""
-            var test=related_subject_list
 
             temp=related_subject_list[currentIdx].cha.plus("meaning: ")
 
             textBlockTV.text=temp.plus(related_subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning="))
-
-
-//            textBlockTV.text = debug_examples[currentIdx]
         }
     }
 
     private fun initLeftRightArrow(){
         leftArrowTV.setOnClickListener{
-            decrementIdx()
-            currentTabIdx=0
-            openTab(currentTabIdx)
+            if( currentIdx != 0) {
+                decrementIdx()
+                currentTabIdx = 0
+                openTab(currentTabIdx)
 
-            charTV.text = subject_list[currentIdx].cha
-            meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
-            setCounter()
-            lessonDone[currentIdx*tabCount]=true
+                charTV.text = subject_list[currentIdx].cha
+                meaningTV.text = subject_list[currentIdx].meanings[0].toString()
+                    .split(",")[0].removePrefix("{meaning=")
+                setCounter()
+                lessonDone[currentIdx * tabCount] = true
+            }
         }
 
         rightArrowTV.setOnClickListener{
             if(currentIdx==subject_list.size-1){
                 //reached end of quiz
                 //don't allow user to continue
-
+                if(currentTabIdx ==0){
+                    Log.d("XXXtabidx", "1b tab idx is $currentTabIdx")
+                    currentTabIdx++
+                    openTab(currentTabIdx)
+                }
             }else{
-
 
             continue_related_vocab()//fetch next related vocab
             if (currentTabIdx == radicalTabsTitles.size-1) {
                 incrementIdx()
+
+                Log.d("XXXtabidx", "1 tab idx is $currentTabIdx")
                 currentTabIdx=0
                 openTab(currentTabIdx)
             }
 
             else {
+                Log.d("XXXtabidx", "0 tab idx is $currentTabIdx")
                 currentTabIdx++
                 openTab(currentTabIdx)
             }
+            Log.d("XXXidx", "idx is $currentIdx")
 
             charTV.text = subject_list[currentIdx].cha
             meaningTV.text = subject_list[currentIdx].meanings[0].toString().split(",")[0].removePrefix("{meaning=")
             setCounter()
 
             val lessonDoneIdx = currentIdx*tabCount+currentTabIdx
-            lessonDone[lessonDoneIdx]=true
+            lessonDone[currentIdx]=true
             Log.d("XXXlessonDone", "$lessonDoneIdx is set to true")
             checkIfLessonDone()
         }}
@@ -191,7 +197,7 @@ class Lesson : Fragment() {
 
     private fun decrementIdx() {
         if( currentIdx == 0)
-            currentIdx = subject_list.size-1
+           currentIdx = subject_list.size-1
         else
             currentIdx--
     }
@@ -212,6 +218,11 @@ class Lesson : Fragment() {
         viewModel.observeAvailableLessonSubjects().observe(viewLifecycleOwner,
                 Observer {
                     if (it!= null){
+                        lessonDone= mutableListOf()
+                        subject_list= mutableListOf()
+                        subject_id_list= mutableListOf()
+                        userCanStartQuiz=0
+
                         var type = "Radical"
                         var ctr = 0
                         for (i in it){
@@ -226,9 +237,7 @@ class Lesson : Fragment() {
                             //    "Vocabulary"->tabCount=3
                             //    else->tabCount=0
                             //}
-                            //for (i in 0 until tabCount) {
-                                lessonDone.add(false)
-                            //}
+                            lessonDone.add(false)
 //                            for(x in i.related_subject_ids){ //too many requests this way
 //                                viewModel.launch_subject_data(x)
 //                            }
