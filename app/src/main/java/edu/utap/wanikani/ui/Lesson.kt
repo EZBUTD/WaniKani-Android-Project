@@ -18,7 +18,11 @@ import edu.utap.wanikani.MainViewModel
 import edu.utap.wanikani.R
 import edu.utap.wanikani.api.WanikaniApi
 import edu.utap.wanikani.api.WanikaniSubjects
+import edu.utap.wanikani.glide.Glide
 import kotlinx.android.synthetic.main.fragment_lesson.*
+import kotlinx.android.synthetic.main.fragment_lesson.charTV
+import kotlinx.android.synthetic.main.fragment_lesson.counterTV
+import kotlinx.android.synthetic.main.fragment_review_quiz.*
 
 class Lesson : Fragment() {
 
@@ -58,7 +62,26 @@ class Lesson : Fragment() {
     }
 
     private fun initCharacters(){
-        charTV.text = subject_list[currentIdx].cha
+        if (subject_list[currentIdx].cha.isNullOrBlank()) {
+            //need to make sure it's a png
+            var counter=0
+
+            var url = subject_list[currentIdx].character_image[0].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+            while(url.contains("svg")){
+                counter++
+                url=subject_list[currentIdx].character_image[counter].toString().split(",")[0].removePrefix("{url=").removeSuffix("\"")
+            }
+
+            Glide.glideFetch(url, url, charImageTV2)
+            charTV.text = "" //set textview to null and need to load image view somehow
+        } else {
+            charImageTV2.setImageDrawable(null)
+            charTV.text = subject_list[currentIdx].cha
+        }
+
+//        charTV.text = subject_list[currentIdx].cha
+
+
     }
 
     private fun initMeaning(){
