@@ -283,6 +283,7 @@ class Lesson : Fragment() {
         viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
             Observer {
                 if (it!= null){
+                    related_subject_list= mutableListOf()
                     if(related_subject_list.contains(it)){
 //                        var temp=viewModel.observeWanikaniSubject()
 //                        var temp2=viewModel.observeWanikaniSubject()

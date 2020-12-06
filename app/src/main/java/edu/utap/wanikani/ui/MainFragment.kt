@@ -50,6 +50,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     private fun initReviewObserver() {
         viewModel.observeAvailableReviewSubjectsId().observe(viewLifecycleOwner,
             Observer { myReviewList ->
+                swipeRefreshLayout.isRefreshing = false
                 if (myReviewList != null) {
                     reviewSize = myReviewList.size
                     setReviewsTV(reviewSize)
@@ -62,6 +63,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     private fun initLessonObserver() {
         viewModel.observeAvailableLessonSubjectsId().observe(viewLifecycleOwner,
             Observer { myLessonList ->
+                swipeRefreshLayout.isRefreshing = false
                 if (myLessonList != null) {
                     lessonSize = myLessonList.size
                     setLessonsTV(lessonSize)
@@ -79,6 +81,15 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             })
     }
 
+    private fun initSwipeLayout() {
+        swipeRefreshLayout.setOnRefreshListener {
+            Log.d("XXX5", " refreshing")
+            swipeRefreshLayout.isRefreshing = true
+            viewModel.netIdsLessons()
+            viewModel.netIdsReview()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -89,6 +100,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         viewModel.observeWanikaniSubject().observe(viewLifecycleOwner,
             Observer {
+                swipeRefreshLayout.isRefreshing = false
                 if (it != null) {
                     val subject = it.cha
                     Log.d("XXXFrag", "My subject character is ${subject}")
@@ -108,6 +120,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         initNameObserver()
         initReviewObserver()
         initLessonObserver()
+        initSwipeLayout()
 
         startBut.setOnClickListener{
             if(lessonSize > 0) {
@@ -145,14 +158,5 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                 .commit()
         }
 
-        testBut.setOnClickListener{
-            viewModel.netUser()
-            viewModel.netRefresh()
-            viewModel.netIdsLessons()
-            viewModel.netIdsReview()
-
-        }
     }
-
-
 }
