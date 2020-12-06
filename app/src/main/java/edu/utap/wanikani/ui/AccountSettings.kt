@@ -16,6 +16,8 @@ import edu.utap.wanikani.R
 import kotlinx.android.synthetic.main.fragment_account_settings.*
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -63,7 +65,7 @@ class AccountSettings : Fragment() {
                         setTimeRemaining("No assignments pending. Please complete your current assignments to unlock new ones!")
                     } else {
                         var firstAssignmentTime :LocalDateTime = LocalDateTime.now()
-                        val currentTime = LocalDateTime.now()
+                        val currentTime = LocalDateTime.now(ZoneOffset.UTC)
                         setTimeRemaining("")
                         //val formatter = DateTimeFormatter.ISO_INSTANT
                         //val formattedCurrentTime = currentTime.format(formatter)
