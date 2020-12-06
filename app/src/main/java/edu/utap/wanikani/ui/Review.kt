@@ -67,14 +67,7 @@ class Review : Fragment() {
     }
 
     private fun initTabs(){
-        kanjiTab1TV.visibility = View.INVISIBLE
-        kanjiTab2TV.visibility = View.INVISIBLE
-        kanjiTab3TV.visibility = View.INVISIBLE
-        kanjiTab4TV.visibility = View.INVISIBLE
-
         //set up subject info during init
-
-
 //        tabTitleTV.text = radicalTabsTitles[0]
 //        textBlockTV.text = debug_nameMnemonic[0]
 //        textBlockTV.text=viewModel.observeWanikaniSubject().value?.meaning_mnemonic

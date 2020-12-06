@@ -66,11 +66,6 @@ class Lesson : Fragment() {
     }
 
     private fun initTabs(){
-        kanjiTab1TV.visibility = View.INVISIBLE
-        kanjiTab2TV.visibility = View.INVISIBLE
-        kanjiTab3TV.visibility = View.INVISIBLE
-        kanjiTab4TV.visibility = View.INVISIBLE
-
 
         tabTitleTV.text = radicalTabsTitles[0]
         textBlockTV.text= subject_list[currentIdx].meaning_mnemonic
