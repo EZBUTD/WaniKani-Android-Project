@@ -118,6 +118,10 @@ class ReviewQuiz : Fragment() {
                         }
 
                     }
+                    //Call a refresh on the ids when the quiz/review is completed.
+                    viewModel.netRefresh()
+                    viewModel.netIdsLessons()
+                    viewModel.netIdsReview()
                     parentFragmentManager.popBackStack()
                     parentFragmentManager.popBackStack()
                 } else {
@@ -147,6 +151,10 @@ class ReviewQuiz : Fragment() {
                         //check if key actually is right
 
                     }
+                    //Call a refresh on the ids when the quiz/review is completed.
+                    viewModel.netRefresh()
+                    viewModel.netIdsLessons()
+                    viewModel.netIdsReview()
                     parentFragmentManager.popBackStack()
                 }
             } else
