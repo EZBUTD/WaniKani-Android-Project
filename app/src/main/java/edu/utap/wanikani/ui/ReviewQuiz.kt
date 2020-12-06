@@ -85,7 +85,6 @@ class ReviewQuiz : Fragment() {
             else{
                 quiz_data = viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
                 correct_answers.add(quiz_data[currentIdx])
-
             }
 
             answerLay.setBackgroundColor(Color.GREEN)
@@ -95,68 +94,7 @@ class ReviewQuiz : Fragment() {
             Log.d("XXXcheckanswer", "correct answer")
 
             if (lessonFinished()) {
-                //submit put requests to mark items as succesfully completed and move into review queue
-//                for(item in quiz_data){
-//                    var temp2=assignments_ids
-//                    var assignment_id_key=assignments_ids.filterValues { it==item.subject_id }.keys.iterator().next()
-//                    //check if key actually is right
-//                    var temp=assignment_id_key
-//                    viewModel.move_to_reviews(assignment_id_key)
-//                }
-                //Pop back twice if coming from the lesson frag; pop back once if coming from the home frag
-                if (isQuiz == 1) {
-                    for (item in quiz_data) {
-                        var temp2 = assignments_ids
-                        var assignment_id_key =
-                            assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
-                                .next()
-                        //check if key actually is right
-                        var temp = assignment_id_key
-                        //only move if answer was right.
-                        if (correct_answers.contains(item)) {
-                            viewModel.move_to_reviews(assignment_id_key)
-                        }
-
-                    }
-                    //Call a refresh on the ids when the quiz/review is completed.
-                    viewModel.netRefresh()
-                    viewModel.netIdsLessons()
-                    viewModel.netIdsReview()
-                    parentFragmentManager.popBackStack()
-                    parentFragmentManager.popBackStack()
-                } else {
-                    quiz_data = viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
-                    for (item in quiz_data) {
-                        assignments_ids = viewModel.observeAssignment_ids().value!!
-                        var temp2 = assignments_ids
-                        var assignment_id_key: Int? =
-                            assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
-                                .next()
-                        if (assignment_id_key == null) {
-                            //somethig went wrong
-                        } else {
-                            if (correct_answers.contains(item)) { //only send review create request if answer is correct
-                            var temp = assignment_id_key
-                            viewModel.create_review(
-                                WanikaniApi.NestedJSON(
-                                    WanikaniApi.NestedJSON_single(
-                                        assignment_id = assignment_id_key.toString(),
-                                        incorrect_meaning_answers = "0",
-                                        incorrect_reading_answers = "0"
-                                    )
-                                )
-                            )
-                            }
-                        }
-                        //check if key actually is right
-
-                    }
-                    //Call a refresh on the ids when the quiz/review is completed.
-                    viewModel.netRefresh()
-                    viewModel.netIdsLessons()
-                    viewModel.netIdsReview()
-                    parentFragmentManager.popBackStack()
-                }
+                finishLesson()
             } else
                 nextQuestion()
 
@@ -174,42 +112,102 @@ class ReviewQuiz : Fragment() {
         }
     }
 
+    private fun finishLesson() {
+        //submit put requests to mark items as succesfully completed and move into review queue
+        if (isQuiz == 1) {
+            for (item in quiz_data) {
+                var temp2 = assignments_ids
+                var assignment_id_key =
+                    assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
+                        .next()
+                //check if key actually is right
+                var temp = assignment_id_key
+                //only move if answer was right.
+                if (correct_answers.contains(item)) {
+                    viewModel.move_to_reviews(assignment_id_key)
+                }
+
+            }
+            //Call a refresh on the ids when the quiz/review is completed.
+            viewModel.netRefresh()
+            viewModel.netIdsLessons()
+            viewModel.netIdsReview()
+            //Pop back twice if coming from the lesson frag; pop back once if coming from the home frag
+            parentFragmentManager.popBackStack()
+            parentFragmentManager.popBackStack()
+        } else {
+            quiz_data = viewModel.observeAvailableReviewSubjects().value?.toMutableList()!!
+            for (item in quiz_data) {
+                assignments_ids = viewModel.observeAssignment_ids().value!!
+                var temp2 = assignments_ids
+                var assignment_id_key: Int? =
+                    assignments_ids.filterValues { it == item.subject_id }.keys.iterator()
+                        .next()
+                if (assignment_id_key == null) {
+                    //somethig went wrong
+                } else {
+                    if (correct_answers.contains(item)) { //only send review create request if answer is correct
+                        var temp = assignment_id_key
+                        viewModel.create_review(
+                            WanikaniApi.NestedJSON(
+                                WanikaniApi.NestedJSON_single(
+                                    assignment_id = assignment_id_key.toString(),
+                                    incorrect_meaning_answers = "0",
+                                    incorrect_reading_answers = "0"
+                                )
+                            )
+                        )
+                    }
+                }
+                //check if key actually is right
+
+            }
+            //Call a refresh on the ids when the quiz/review is completed.
+            viewModel.netRefresh()
+            viewModel.netIdsLessons()
+            viewModel.netIdsReview()
+            parentFragmentManager.popBackStack()
+        }
+
+    }
+
     private fun nextQuestion() {
         tries = 0
 
-        var nextIdx = questionDone.subList(currentIdx + 1, questionDone.size).indexOf(false)
-        Log.d("XXXnextQuestion0", "$nextIdx is the next idx")
-        if (nextIdx == -1) {
-            nextIdx = questionDone.indexOf(false)
-        } else {
-            //Accounts for the offset introduced by taking the sublist
-            nextIdx += currentIdx + 1
+        if(currentIdx==answers.size-1){
+            responseET.setBackgroundColor(Color.WHITE)
+            answerLay.setBackgroundColor(Color.WHITE)
+            finishLesson()
+        }else {
+            var nextIdx = questionDone.subList(currentIdx + 1, questionDone.size).indexOf(false)
+            Log.d("XXXnextQuestion0", "$nextIdx is the next idx")
+            if (nextIdx == -1) {
+                nextIdx = questionDone.indexOf(false)
+            } else {
+                //Accounts for the offset introduced by taking the sublist
+                nextIdx += currentIdx + 1
+            }
+
+            Log.d("XXXnextQuestion1", "$nextIdx is the next idx")
+
+            currentIdx = nextIdx
+            setCounter()
+            responseET.setBackgroundColor(Color.WHITE)
+            answerLay.setBackgroundColor(Color.WHITE)
+
+            if (characters[currentIdx].contains("https:")) {
+
+                var url = characters[currentIdx]
+                Glide.glideFetch(url, url, charImageTV)
+                charTV.text = "" //set textview to null and need to load image view somehow
+            } else {
+                charImageTV.setImageDrawable(null)
+                charTV.text = characters[currentIdx]
+            }
+
+            responseET.text.clear()
         }
-
-
-        Log.d("XXXnextQuestion1", "$nextIdx is the next idx")
-
-        currentIdx = nextIdx
-        setCounter()
-        responseET.setBackgroundColor(Color.WHITE)
-        answerLay.setBackgroundColor(Color.WHITE)
-//        charTV.text = debug_characters[currentIdx]
-
-
-        if (characters[currentIdx].contains("https:")) {
-
-            var url = characters[currentIdx]
-            Glide.glideFetch(url, url, charImageTV)
-            charTV.text = "" //set textview to null and need to load image view somehow
-        } else {
-            charImageTV.setImageDrawable(null)
-            charTV.text = characters[currentIdx]
-        }
-
-    responseET.text.clear()
 }
-
-
 
     private fun lessonFinished() :Boolean {
         return !questionDone.contains(false)
