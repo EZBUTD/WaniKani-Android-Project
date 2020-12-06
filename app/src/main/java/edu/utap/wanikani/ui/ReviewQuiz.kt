@@ -49,7 +49,16 @@ class ReviewQuiz : Fragment() {
     }
 
     private fun initCharacters() {
-        charTV.text = characters[0]
+        if (characters[currentIdx].contains("https:")) {
+
+            var url = characters[currentIdx]
+            Glide.glideFetch(url, url, charImageTV)
+            charTV.text = "" //set textview to null and need to load image view somehow
+        } else {
+            charImageTV.setImageDrawable(null)
+            charTV.text = characters[currentIdx]
+        }
+//        charTV.text = characters[0]
     }
 
     private fun initTitle() {
